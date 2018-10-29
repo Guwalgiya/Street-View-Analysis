@@ -1,8 +1,8 @@
 # ===============================================
 # Import Packages and Functions
-from cv2 import cvtColor, GaussianBlur, Canny, COLOR_BGR2GRAY
-from CVhelpers import colorFilter
-import matplotlib.pyplot as plt
+from   cv2               import cvtColor, GaussianBlur, Canny, COLOR_BGR2GRAY
+from   CVhelpers         import colorFilter
+import matplotlib.pyplot as     plt
 
 # ===============================================
 def processImage(input_image, process_para_bundle):
@@ -25,6 +25,14 @@ def processImage(input_image, process_para_bundle):
     intermediate_image = GaussianBlur(intermediate_image, blur_kernel, sigma_X)
     plt.figure()
     plt.imshow(intermediate_image)
+    
+    
+    # ===============================================
+    # Extract Edges
+    edges = Canny(intermediate_image, 50, 150)
+    plt.figure()
+    plt.imshow(edges)
+    
     
     
     return 0
