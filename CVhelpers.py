@@ -10,9 +10,13 @@ def colorFilter(input_image, colorFilter_para_bundle):
     
     # ===============================================
     # Load Parameters
-    [gamma,        whiteFilter_para_bundle, yellowFilter_para_bundle] = colorFilter_para_bundle
-    [lower_white,  upper_white,             white_weight]             = whiteFilter_para_bundle
-    [lower_yellow, upper_yellow,            yellow_weight]            = yellowFilter_para_bundle
+    gamma         = colorFilter_para_bundle["gamma"]
+    lower_white   = colorFilter_para_bundle["white"]["low"]
+    upper_white   = colorFilter_para_bundle["white"]["high"]
+    white_weight  = colorFilter_para_bundle["white"]["weight"]
+    lower_yellow  = colorFilter_para_bundle["yellow"]["low"]
+    upper_yellow  = colorFilter_para_bundle["yellow"]["high"]
+    yellow_weight = colorFilter_para_bundle["yellow"]["weight"]
     
     
     # ===============================================
@@ -31,18 +35,19 @@ def colorFilter(input_image, colorFilter_para_bundle):
     
     # ===============================================
     # Add Mask
-    hsv_image    = cvtColor(input_image, COLOR_BGR2HSV)
-    yellow_image = bitwise_and(hsv_image  , input_image, mask = yellow_mask)
-    white_image  = bitwise_and(input_image, input_image, mask = white_mask)
+    hsv_image    = cvtColor(input_image,    COLOR_BGR2HSV)
+    yellow_image = bitwise_and(hsv_image  , input_image,   mask = yellow_mask)
+    white_image  = bitwise_and(input_image, input_image,   mask = white_mask)
+    
     
     # ===============================================
     # Show Pictures
-    plt.figure()
-    plt.imshow(hsv_image)
-    plt.figure()
-    plt.imshow(yellow_image)
-    plt.figure()
-    plt.imshow(white_image)
+    # plt.figure()
+    # plt.imshow(hsv_image)
+    # plt.figure()
+    # plt.imshow(yellow_image)
+    # plt.figure()
+    # plt.imshow(white_image)
     
     
     # ===============================================

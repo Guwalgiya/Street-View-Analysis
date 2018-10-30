@@ -1,13 +1,13 @@
 # ===============================================
 # Import Packages and Functions
+from   processImages     import processImage
 from   moviepy.editor    import VideoFileClip
 from   IPython.display   import HTML
-from   detectStreetLines import processImage
-import matplotlib.pyplot as plt
-import matplotlib.image  as mpimg
-import numpy             as np
-import math
-import cv2
+from   snipper           import scope
+from   painter           import draw, mixing
+import matplotlib.pyplot as     plt
+import matplotlib.image  as     mpimg
+import numpy             as     np
 
 
 # ===============================================
@@ -36,8 +36,30 @@ upper_white      = [255, 255, 255]
 lower_yellow     = [90,  100, 100]
 upper_yellow     = [110, 255, 255]
 white_weight     = 1
-yellow_weight    = 1
+yellow_weight    = 0
 gamma            = 0
+
+
+# ===============================================
+# Target Region Parameters
+trap_bottom_width = 0.85
+trap_top_width    = 0.7
+trap_height       = 0.4
+mask_color        = 255
+
+
+# ===============================================
+# Hough Transform
+min_line_length = 10
+slope_threshold = 0.5 
+painting_color  = 255
+max_line_gap    = 20
+line_channel    = 3
+theta_degree    = 1
+threshold       = 15
+data_type       = np.uint8
+thick           = 10
+rho             = 2
 
 
 # ===============================================
@@ -51,10 +73,17 @@ blur_kernel = (blur_kernel_size, blur_kernel_size)
 
 
 # ===============================================
+# Integrate Drawing Parameters
+theta_radius   = theta_degree * np.pi / 180
+painting_color = [painting_color, 0, 0]
+
+
+# ===============================================
 # Arrange all Parameters - Ground Floor - Blur_Parameters
 blur_para_bundle            = {}
 blur_para_bundle["kernel"]  = blur_kernel
 blur_para_bundle["sigma_X"] = sigma_X
+
 
 # ===============================================
 # Arrange all Parameters - Ground Floor
@@ -90,15 +119,66 @@ colorFilter_para_bundle["yellow"] = yellowFilter_para_bundle
 # ===============================================
 # Arrange all Parameters - Top Level
 process_parameters_bundle           = {}
-process_parameters_bundle["filter"] = colorFilter_para_bundle
-process_parameters_bundle["canny"]  = canny_para_bundle
 process_parameters_bundle["blur"]   = blur_para_bundle
-print(process_parameters_bundle)
+process_parameters_bundle["canny"]  = canny_para_bundle
+process_parameters_bundle["filter"] = colorFilter_para_bundle
+
 
 # ===============================================
-#input_image   = mpimg.imread(input_image_path)
-#plt.imshow(input_image)
-#labeled_image = processImage(input_image, process_para_bundle)
+# Arrange all Parameters - Top Level
+vertices_parameters_bundle             = {}
+vertices_parameters_bundle["m_color"]  = mask_color
+vertices_parameters_bundle["t_height"] = trap_height
+vertices_parameters_bundle["t_twidth"] = trap_top_width
+vertices_parameters_bundle["t_bwidth"] = trap_bottom_width
+
+
+# ===============================================
+# Arrange Painter Parameters
+draw_parameters_bundle                = {}
+draw_parameters_bundle["h_threshold"] = threshold
+draw_parameters_bundle["s_threshold"] = slope_threshold
+draw_parameters_bundle["t_height"]    = trap_height
+draw_parameters_bundle["min_len"]     = min_line_length
+draw_parameters_bundle["max_gap"]     = max_line_gap
+draw_parameters_bundle["channel"]     = line_channel
+draw_parameters_bundle["d_type"]      = data_type 
+draw_parameters_bundle["color"]       = painting_color
+draw_parameters_bundle["theta"]       = theta_radius
+draw_parameters_bundle["thick"]       = thick
+draw_parameters_bundle["rho"]         = rho
+
+
+# ===============================================
+# Load Image
+input_image = mpimg.imread(input_image_path)
+plt.figure()
+plt.imshow(input_image)
+
+
+# ===============================================
+# Process Image
+processed_image = processImage(input_image, process_parameters_bundle)
+
+
+# ===============================================
+# Find traget region
+target_region = scope(processed_image, vertices_parameters_bundle)
+#plt.imshow(target_region)
+
+
+# ===============================================
+# Draw Lines
+line_image = draw(target_region, draw_parameters_bundle)
+plt.figure()
+plt.imshow(line_image)
+
+
+# ===============================================
+# Combine
+final_image = mixing(input_image, line_image, 0)
+plt.figure()
+plt.imshow(final_image)
 
 
 # ===============================================
