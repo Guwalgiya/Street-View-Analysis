@@ -17,8 +17,6 @@ def processImage(input_image, process_parameters_bundle):
     # ===============================================
     # Run Processes
     intermediate_image = colorFilter(input_image, colorFilter_para_bundle)
-    #plt.figure()
-    #plt.imshow(intermediate_image)
     
     
     # ===============================================

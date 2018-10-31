@@ -17,12 +17,12 @@ slash = "\\"
 
 # ===============================================
 # Changeable Database Parameters
-image_folder      = "C:\\Street-View-Analysis\\Data"
-input_image_name  = "solidWhiteCurve.jpg"
-output_image_name = ""
-video_folder      = "C:\\Street-View-Analysis\\Data"
-input_video_name  = "solidWhiteRight.mp4"
-output_video_name = "white.mp4"
+image_folder        = "C:\\Street-View-Analysis\\Data"
+original_image_name = "solidWhiteCurve.jpg"
+output_image_name   = ""
+video_folder        = "C:\\Street-View-Analysis\\Data"
+input_video_name    = "solidWhiteRight.mp4"
+output_video_name   = "white.mp4"
 
 
 # ===============================================
@@ -31,40 +31,41 @@ blur_kernel_size = 3
 sigma_X          = 0
 low_threshold    = 50
 high_threshold   = 150
-lower_white      = [200, 200, 200]
+lower_white      = [160, 160, 160] #200 200 200
 upper_white      = [255, 255, 255]
 lower_yellow     = [90,  100, 100]
 upper_yellow     = [110, 255, 255]
 white_weight     = 1
-yellow_weight    = 0
+yellow_weight    = 1
 gamma            = 0
 
 
 # ===============================================
 # Target Region Parameters
-trap_bottom_width = 0.85
-trap_top_width    = 0.7
-trap_height       = 0.4
-mask_color        = 255
-
+trap_bottom_width = 1 #0.85
+trap_top_width    = 1  #0.7
+trap_height       = 0.38  #0.4
+mask_color        = 255  
+if_show_region    = True
 
 # ===============================================
 # Hough Transform
-min_line_length = 10
-slope_threshold = 0.5 
-painting_color  = 255
-max_line_gap    = 20
-line_channel    = 3
-theta_degree    = 1
-threshold       = 15
-data_type       = np.uint8
-thick           = 10
-rho             = 2
+if_show_scatters = True
+min_line_length  = 3     # 10
+slope_threshold  = 0.5 
+painting_color   = 255
+max_line_gap     = 4
+line_channel     = 3
+theta_degree     = 1
+threshold        = 15
+data_type        = np.uint8
+thick            = 10
+rho              = 2
 
 
 # ===============================================
 # Integrate Database Parameters
-input_image_path = image_folder + slash + input_image_name
+original_image_path = image_folder + slash + original_image_name
 
 
 # ===============================================
@@ -126,57 +127,56 @@ process_parameters_bundle["filter"] = colorFilter_para_bundle
 
 # ===============================================
 # Arrange all Parameters - Top Level
-vertices_parameters_bundle             = {}
-vertices_parameters_bundle["m_color"]  = mask_color
-vertices_parameters_bundle["t_height"] = trap_height
-vertices_parameters_bundle["t_twidth"] = trap_top_width
-vertices_parameters_bundle["t_bwidth"] = trap_bottom_width
-
+vertices_parameters_bundle                   = {}
+vertices_parameters_bundle["m_color"]        = mask_color
+vertices_parameters_bundle["t_height"]       = trap_height
+vertices_parameters_bundle["t_twidth"]       = trap_top_width
+vertices_parameters_bundle["t_bwidth"]       = trap_bottom_width
+vertices_parameters_bundle["thickness"]      = thick
+vertices_parameters_bundle["if_show_region"] = if_show_region
 
 # ===============================================
 # Arrange Painter Parameters
-draw_parameters_bundle                = {}
-draw_parameters_bundle["h_threshold"] = threshold
-draw_parameters_bundle["s_threshold"] = slope_threshold
-draw_parameters_bundle["t_height"]    = trap_height
-draw_parameters_bundle["min_len"]     = min_line_length
-draw_parameters_bundle["max_gap"]     = max_line_gap
-draw_parameters_bundle["channel"]     = line_channel
-draw_parameters_bundle["d_type"]      = data_type 
-draw_parameters_bundle["color"]       = painting_color
-draw_parameters_bundle["theta"]       = theta_radius
-draw_parameters_bundle["thick"]       = thick
-draw_parameters_bundle["rho"]         = rho
+draw_parameters_bundle                     = {}
+draw_parameters_bundle["if_show_scatters"] = if_show_scatters
+draw_parameters_bundle["h_threshold"]      = threshold
+draw_parameters_bundle["s_threshold"]      = slope_threshold
+draw_parameters_bundle["t_height"]         = trap_height
+draw_parameters_bundle["min_len"]          = min_line_length
+draw_parameters_bundle["max_gap"]          = max_line_gap
+draw_parameters_bundle["channel"]          = line_channel
+draw_parameters_bundle["d_type"]           = data_type 
+draw_parameters_bundle["color"]            = painting_color
+draw_parameters_bundle["theta"]            = theta_radius
+draw_parameters_bundle["thick"]            = thick
+draw_parameters_bundle["rho"]              = rho
 
 
 # ===============================================
 # Load Image
-input_image = mpimg.imread(input_image_path)
+original_image = mpimg.imread(original_image_path)
 plt.figure()
-plt.imshow(input_image)
+plt.imshow(original_image)
 
 
 # ===============================================
 # Process Image
-processed_image = processImage(input_image, process_parameters_bundle)
+processed_image = processImage(original_image, process_parameters_bundle)
 
 
 # ===============================================
 # Find traget region
-target_region = scope(processed_image, vertices_parameters_bundle)
-#plt.imshow(target_region)
+target_region = scope(original_image, processed_image, vertices_parameters_bundle)
 
 
 # ===============================================
 # Draw Lines
-line_image = draw(target_region, draw_parameters_bundle)
-plt.figure()
-plt.imshow(line_image)
+line_image = draw(original_image, target_region, draw_parameters_bundle)
 
 
 # ===============================================
 # Combine
-final_image = mixing(input_image, line_image, 0)
+final_image = mixing(original_image, line_image, 0)
 plt.figure()
 plt.imshow(final_image)
 

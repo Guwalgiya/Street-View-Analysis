@@ -1,22 +1,25 @@
 # ===============================================
 # Import Packages and Functions
-from   cv2   import fillPoly, bitwise_and
-import numpy as     np
-
+from   cv2               import fillPoly, bitwise_and, line
+import numpy             as     np
+import matplotlib.pyplot as     plt
+import matplotlib.image  as     mpimg
 
 # ===============================================
 # Function getVertices
-def scope(input_image, vertices_parameters_bundle):
+def scope(original_image, input_image, vertices_parameters_bundle):
     
     
     # ===============================================
     # Get Parameters
     mask_color        = vertices_parameters_bundle["m_color"]
+    if_show_region    = vertices_parameters_bundle["if_show_region"]
     height, width     = input_image.shape
     trap_height       = vertices_parameters_bundle["t_height"]
     trap_top_width    = vertices_parameters_bundle["t_twidth"]
     trap_bottom_width = vertices_parameters_bundle["t_bwidth"]
-    
+    thickness         = vertices_parameters_bundle["thickness"]
+
     
     # ===============================================
     # Vertices    
@@ -32,9 +35,21 @@ def scope(input_image, vertices_parameters_bundle):
     
     
     # ===============================================
+    # if we want to show the "trap-area"
+    if if_show_region:
+        temp_image = original_image.copy()
+        temp_iamge = line(temp_image, (int(a[0]),int(a[1])), (int(b[0]),int(b[1])), [mask_color,], thickness)
+        temp_iamge = line(temp_iamge, (int(b[0]),int(b[1])), (int(c[0]),int(c[1])), [mask_color,], thickness)
+        temp_iamge = line(temp_iamge, (int(c[0]),int(c[1])), (int(c[0]),int(c[1])), [mask_color,], thickness)
+        temp_iamge = line(temp_iamge, (int(d[0]),int(d[1])), (int(c[0]),int(c[1])), [mask_color,], thickness)
+        plt.figure()
+        plt.imshow(temp_iamge)
+    
+    
+    # ===============================================
     # Draw Region of Interest
     target_region = get_target_region(input_image, vertices, mask_color)
-    
+
     
     # ===============================================
     return target_region
@@ -55,7 +70,7 @@ def get_target_region(input_image, vertices, mask_color):
     # Create a Mask to Cover Useless Things 
     mask = np.zeros_like(input_image)
     mask = fillPoly(mask, vertices, mask_color)
-    
+
     
     # ===============================================
     # Draw Interests of Reigion
