@@ -18,7 +18,7 @@ slash = "\\"
 # ===============================================
 # Changeable Database Parameters
 image_folder        = "C:\\Street-View-Analysis\\Data"
-original_image_name = "solidWhiteCurve.jpg"
+original_image_name = "Atlanta_1.jpg"
 output_image_name   = ""
 video_folder        = "C:\\Street-View-Analysis\\Data"
 input_video_name    = "solidWhiteRight.mp4"
@@ -27,11 +27,11 @@ output_video_name   = "white.mp4"
 
 # ===============================================
 # Changeable Process Parameters
-blur_kernel_size = 3
+blur_kernel_size = 1
 sigma_X          = 0
 low_threshold    = 50
 high_threshold   = 150
-lower_white      = [160, 160, 160] #200 200 200
+lower_white      = [150, 150, 150] #200 200 200
 upper_white      = [255, 255, 255]
 lower_yellow     = [90,  100, 100]
 upper_yellow     = [110, 255, 255]
@@ -44,17 +44,17 @@ gamma            = 0
 # Target Region Parameters
 trap_bottom_width = 1 #0.85
 trap_top_width    = 1  #0.7
-trap_height       = 0.38  #0.4
+trap_height       = 0.34 #0.4
 mask_color        = 255  
-if_show_region    = True
+if_show_region    = False
 
 # ===============================================
 # Hough Transform
 if_show_scatters = True
-min_line_length  = 3     # 10
-slope_threshold  = 0.5 
+min_line_length  = 10     # 10
+slope_threshold  = 0
 painting_color   = 255
-max_line_gap     = 4
+max_line_gap     = 10
 line_channel     = 3
 theta_degree     = 1
 threshold        = 15

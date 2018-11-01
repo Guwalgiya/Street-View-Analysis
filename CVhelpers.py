@@ -41,10 +41,7 @@ def colorFilter(input_image, colorFilter_para_bundle):
     # Add Mask
     yellow_image = bitwise_and(input_image, input_image,   mask = yellow_mask)
     white_image  = bitwise_and(input_image, input_image,   mask = white_mask)
-    plt.figure()
-    plt.imshow(yellow_image)
-    plt.figure()
-    plt.imshow(white_image)
+
         
     # ===============================================
     # Combine two masked picture

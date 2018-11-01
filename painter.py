@@ -1,9 +1,14 @@
 # ===============================================
 # Import Packages and Functions
 from   cv2               import HoughLinesP, line, addWeighted
+from   random            import uniform
+from   operator          import itemgetter
+from   sklearn.cluster   import KMeans
+from   sklearn.mixture   import GMM
 import numpy             as     np
 import matplotlib.pyplot as     plt
 import matplotlib.image  as     mpimg
+
 
 # ===============================================
 # Function Draw
@@ -32,13 +37,11 @@ def draw(original_image, input_image, draw_parameters_bundle):
                         minLineLength = min_line_length, 
                         maxLineGap    = max_line_gap)
         
-
-    # ===============================================
-    # Get Slopes of Lines
-    x            = []
-    y            = []
-    slopes       = []
-    chosen_lines = []
+    right_X = []
+    right_Y = []
+    left_X = []
+    left_Y = []
+    center_x = 480
     for cur_line in lines:
         x1, y1, x2, y2 = cur_line[0]  
         
@@ -48,107 +51,77 @@ def draw(original_image, input_image, draw_parameters_bundle):
             slope = -np.log(0)
         else:
             slope = (y2 - y1) / (x2 - x1)
- 
-    
-        # ===============================================
-        # Find Scatter 
-        x.append(x1)
-        x.append(x2)
-        y.append(y1)
-        y.append(y2)
-        
-        
-        # ===============================================
-        # Choose Qualified Lines
         if abs(slope) > slope_threshold:
-            slopes.append(slope)
-            chosen_lines.append(cur_line)
-    
-    
+            if   slope > 0 and x1 > center_x and x2 > center_x:
+                right_X.append(x1)
+                right_X.append(x2)
+                right_Y.append(y1)
+                right_Y.append(y2)
+                
+                
+                
+            elif slope < 0 and x1 < center_x and x2 < center_x:
+                left_X.append(x1)
+                left_X.append(x2)
+                left_Y.append(y1)
+                left_Y.append(y2)
+
+    train_data = np.column_stack((left_X, left_Y))
+    num_clus = 3
+    cluster = GMM(n_components = num_clus, covariance_type = "full")
+    labels  = cluster.fit_predict(train_data)
+    d = {}
+    draw_Y1 = input_image.shape[0]
+    draw_Y2 = input_image.shape[0] * (1 - trap_height)
+    plt.figure()
+    plt.axis([0, 480 * 2, 0, 540])
+    plt.scatter(left_X, left_Y, c = labels, cmap= "viridis")
+    plt.gca().invert_yaxis()
+    line_image = np.zeros((*input_image.shape, line_channel), dtype = data_type) 
+    for i in range(num_clus):
+        indices  = np.where(labels == i)[0].tolist()
+        print(indices)
+        if len(indices) > 1:
+            reg_data = train_data[indices]
+            print(reg_data)
+            k, b     = np.polyfit(reg_data[:, 0], reg_data[:, 1], 1)
+            d[k]     = reg_data
+            draw_X1 = (draw_Y1 - b) / k
+            draw_X2 = (draw_Y2 - b) / k
+            line_image = line(line_image, (int(draw_X1),  int(draw_Y1)), (int(draw_X2),  int(draw_Y2)), painting_color, thickness)
+        
+    train_data = np.column_stack((right_X, right_Y))
+    num_clus = 1
+    cluster = GMM(n_components = num_clus, covariance_type = "full")
+    labels  = cluster.fit_predict(train_data)
+    d = {}
+    draw_Y1 = input_image.shape[0]
+    draw_Y2 = input_image.shape[0] * (1 - trap_height)
+    plt.figure()
+    plt.axis([0, 480 * 2, 0, 540])
+    plt.scatter(right_X, right_Y, c = labels, cmap= "viridis")
+    plt.gca().invert_yaxis()
+    for i in range(num_clus):
+        indices  = np.where(labels == i)[0].tolist()
+        print(indices)
+        if len(indices) > 1:
+            reg_data = train_data[indices]
+            print(reg_data)
+            k, b     = np.polyfit(reg_data[:, 0], reg_data[:, 1], 1)
+            d[k]     = reg_data
+            draw_X1 = (draw_Y1 - b) / k
+            draw_X2 = (draw_Y2 - b) / k
+            line_image = line(line_image, (int(draw_X1),  int(draw_Y1)), (int(draw_X2),  int(draw_Y2)), painting_color, thickness)
+ 
+
     # ===============================================
     # Draw those scatters
     if if_show_scatters:
         temp_image = original_image.copy()
         plt.figure()
         plt.imshow(temp_image)
-        plt.scatter(x, y)
-    
-    
-    
-    # ===============================================
-    # Get Lines   
-    right_lines = []
-    left_lines  = []
-    center_x    = input_image.shape[1] / 2  
-    for i, cur_line in enumerate(chosen_lines):
-        # ===============================================
-        # Put them into correct class
-        x1, y1, x2, y2 = cur_line[0]    
-        if   slopes[i] > 0 and x1 > center_x and x2 > center_x:
-            right_lines.append(cur_line)
-        elif slopes[i] < 0 and x1 < center_x and x2 < center_x:
-            left_lines.append(cur_line)
+        plt.scatter(left_X + right_X, left_Y + right_Y)
 
-       
-    # ===============================================
-    # Prepare to Draw
-    Y1 = input_image.shape[0]
-    Y2 = input_image.shape[0] * (1 - trap_height)
-    
-    
-    # ===============================================
-    # Work on Left Lines
-    left_lines_x = []
-    left_lines_y = []
-    
-    for cur_line in left_lines:
-        x1, y1, x2, y2 = cur_line[0]
-        
-        left_lines_x.append(x1)
-        left_lines_x.append(x2)
-        
-        left_lines_y.append(y1)
-        left_lines_y.append(y2)
-        
-    if len(left_lines_x) > 0:
-        left_k, left_b = np.polyfit(left_lines_x, left_lines_y, 1)
-    else:
-        left_k, left_b = 1, 1
-    
-    left_x1 = (Y1 - left_b) / left_k
-    left_x2 = (Y2 - left_b) / left_k
-
-    
-    # ===============================================
-    # Work on Right Lines
-    right_lines_x = []
-    right_lines_y = []
-    
-    for cur_line in right_lines:
-        x1, y1, x2, y2 = cur_line[0]
-        
-        right_lines_x.append(x1)
-        right_lines_x.append(x2)
-        
-        right_lines_y.append(y1)
-        right_lines_y.append(y2)
-        
-    if len(right_lines_x) > 0:
-        right_k, right_b = np.polyfit(right_lines_x, right_lines_y, 1)
-    else:
-        right_k, right_b = 1, 1
-    
-    right_x1 = (Y1 - right_b) / right_k
-    right_x2 = (Y2 - right_b) / right_k  
-    
-
-    # ===============================================
-    # Draw        
-    line_image = np.zeros((*input_image.shape, line_channel), dtype = data_type) 
-    line_image = line(line_image, (int(left_x1),  int(Y1)), (int(left_x2),  int(Y2)), painting_color, thickness)
-    line_image = line(line_image, (int(right_x1), int(Y1)), (int(right_x2), int(Y2)), painting_color, thickness)
-    
-    
     # ===============================================
     return line_image
 
@@ -162,3 +135,14 @@ def mixing(original_image, line_image, mixing_para_bundle):
     
     # ===============================================
     return mixed_picture
+
+
+# ===============================================
+# Check if the current k is too much
+def duplicate_or_not(k, k_list):
+    if k_list == []:
+        return True
+    for existed_k in k_list:
+        if abs(k - existed_k) < 0.2:
+            return False
+    return True
