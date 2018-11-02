@@ -1,4 +1,3 @@
-from random import randint
 from sklearn.mixture import GMM
 import matplotlib.pyplot as     plt
 import numpy as np

@@ -44,23 +44,26 @@ gamma            = 0
 # Target Region Parameters
 trap_bottom_width = 1 #0.85
 trap_top_width    = 1  #0.7
-trap_height       = 0.34 #0.4
+trap_height       = 0.3 #0.4
 mask_color        = 255  
 if_show_region    = False
 
+
 # ===============================================
 # Hough Transform
-if_show_scatters = True
-min_line_length  = 10     # 10
-slope_threshold  = 0
-painting_color   = 255
-max_line_gap     = 10
-line_channel     = 3
-theta_degree     = 1
-threshold        = 15
-data_type        = np.uint8
-thick            = 10
-rho              = 2
+if_show_right_cluster = True
+if_show_left_cluster  = True
+if_show_scatters      = True
+min_line_length       = 10     # 10
+slope_threshold       = 0
+painting_color        = 255
+max_line_gap          = 10
+line_channel          = 3
+theta_degree          = 1
+threshold             = 15
+data_type             = np.uint8
+thick                 = 10
+rho                   = 2
 
 
 # ===============================================
@@ -137,19 +140,21 @@ vertices_parameters_bundle["if_show_region"] = if_show_region
 
 # ===============================================
 # Arrange Painter Parameters
-draw_parameters_bundle                     = {}
-draw_parameters_bundle["if_show_scatters"] = if_show_scatters
-draw_parameters_bundle["h_threshold"]      = threshold
-draw_parameters_bundle["s_threshold"]      = slope_threshold
-draw_parameters_bundle["t_height"]         = trap_height
-draw_parameters_bundle["min_len"]          = min_line_length
-draw_parameters_bundle["max_gap"]          = max_line_gap
-draw_parameters_bundle["channel"]          = line_channel
-draw_parameters_bundle["d_type"]           = data_type 
-draw_parameters_bundle["color"]            = painting_color
-draw_parameters_bundle["theta"]            = theta_radius
-draw_parameters_bundle["thick"]            = thick
-draw_parameters_bundle["rho"]              = rho
+draw_parameters_bundle                          = {}
+draw_parameters_bundle["if_show_right_cluster"] = if_show_right_cluster
+draw_parameters_bundle["if_show_left_cluster"]  = if_show_left_cluster
+draw_parameters_bundle["if_show_scatters"]      = if_show_scatters
+draw_parameters_bundle["h_threshold"]           = threshold
+draw_parameters_bundle["s_threshold"]           = slope_threshold
+draw_parameters_bundle["t_height"]              = trap_height
+draw_parameters_bundle["min_len"]               = min_line_length
+draw_parameters_bundle["max_gap"]               = max_line_gap
+draw_parameters_bundle["channel"]               = line_channel
+draw_parameters_bundle["d_type"]                = data_type 
+draw_parameters_bundle["color"]                 = painting_color
+draw_parameters_bundle["theta"]                 = theta_radius
+draw_parameters_bundle["thick"]                 = thick
+draw_parameters_bundle["rho"]                   = rho
 
 
 # ===============================================
