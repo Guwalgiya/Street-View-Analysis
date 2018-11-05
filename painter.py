@@ -18,9 +18,9 @@ def draw(original_image, input_image, draw_parameters_bundle):
     min_line_length       = draw_parameters_bundle["min_len"]  
     slope_threshold       = draw_parameters_bundle["s_threshold"]
     painting_color        = draw_parameters_bundle["color"] 
+    drawing_height        = draw_parameters_bundle["draw_height"]
     line_channel          = draw_parameters_bundle["channel"]
     max_line_gap          = draw_parameters_bundle["max_gap"]  
-    trap_height           = draw_parameters_bundle["t_height"]
     threshold             = draw_parameters_bundle["h_threshold"] 
     data_type             = draw_parameters_bundle["d_type"]  
     thickness             = draw_parameters_bundle["thick"] 
@@ -91,13 +91,10 @@ def draw(original_image, input_image, draw_parameters_bundle):
                 right_Y.append(y2)
                     
 
-
-        
-        
     # ===============================================
     # Prepare for drawing
     Y1         = input_image.shape[0]
-    Y2         = input_image.shape[0] * 0.6
+    Y2         = input_image.shape[0] * drawing_height
     line_image = np.zeros((*input_image.shape, line_channel), dtype = data_type)
     
     
@@ -133,6 +130,8 @@ def draw(original_image, input_image, draw_parameters_bundle):
 # Function Mixing
 def mixing(original_image, line_image, mixing_para_bundle):
     original_image = original_image.astype("uint8")
+    
+    
     # ===============================================
     mixed_picture = addWeighted(line_image, 0.8, original_image, 1, 0.) 
     

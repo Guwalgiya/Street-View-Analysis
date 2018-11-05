@@ -2,12 +2,14 @@ import matplotlib.pyplot    as     plt
 import numpy                as     np
 from   sklearn.linear_model import LinearRegression
 from   sklearn.mixture      import GMM
-from   math                 import floor
 
+# ===============================================
+# Use GMM to classify lines
 def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width):
     num_cluster_choices = [1, 2, 3, 4] 
     best_cluster_dict   = {}
     best_avg_score      = np.inf
+    
     
     # ===============================================
     # Start to select number of clusters
@@ -95,20 +97,3 @@ def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width):
         
       
     return best_cluster_dict["X1_all"], best_cluster_dict["X2_all"]
-# =============================================================================
-#     d = {}
-#    
-#  
-#     for i in range(num_clus):
-#         indices  = np.where(labels == i)[0].tolist()
-#         print(indices)
-#         if len(indices) > 1:
-#             reg_data = train_data[indices]
-#             print(reg_data)
-#             k, b     = np.polyfit(reg_data[:, 0], reg_data[:, 1], 1)
-#             d[k]     = reg_data
-#             draw_X1 = (draw_Y1 - b) / k
-#             draw_X2 = (draw_Y2 - b) / k
-#             line_image = line(line_image, (int(draw_X1),  int(draw_Y1)), (int(draw_X2),  int(draw_Y2)), painting_color, thickness)
-#  
-# =============================================================================

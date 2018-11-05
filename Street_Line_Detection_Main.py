@@ -18,7 +18,7 @@ slash = "\\"
 # ===============================================
 # Changeable Database Parameters
 image_folder        = "C:\\Street-View-Analysis\\Data"
-original_image_name = "Atlanta_1.jpg"
+original_image_name = "solidWhiteCurve.jpg"
 output_image_name   = ""
 video_folder        = "C:\\Street-View-Analysis\\Data"
 input_video_name    = "solidWhiteRight.mp4"
@@ -44,7 +44,7 @@ gamma            = 0
 # Target Region Parameters
 trap_bottom_width = 1 #0.85
 trap_top_width    = 1  #0.7
-trap_height       = 0.3 #0.4
+trap_height       = 0.34 #0.4
 mask_color        = 255  
 if_show_region    = False
 
@@ -60,6 +60,7 @@ painting_color        = 255
 max_line_gap          = 10
 line_channel          = 3
 theta_degree          = 1
+draw_height           = 0.6
 threshold             = 15
 data_type             = np.uint8
 thick                 = 10
@@ -151,9 +152,9 @@ draw_parameters_bundle                          = {}
 draw_parameters_bundle["if_show_right_cluster"] = if_show_right_cluster
 draw_parameters_bundle["if_show_left_cluster"]  = if_show_left_cluster
 draw_parameters_bundle["if_show_scatters"]      = if_show_scatters
+draw_parameters_bundle["draw_height"]           = draw_height
 draw_parameters_bundle["h_threshold"]           = threshold
 draw_parameters_bundle["s_threshold"]           = slope_threshold
-draw_parameters_bundle["t_height"]              = trap_height
 draw_parameters_bundle["min_len"]               = min_line_length
 draw_parameters_bundle["max_gap"]               = max_line_gap
 draw_parameters_bundle["channel"]               = line_channel
@@ -168,8 +169,8 @@ draw_parameters_bundle["rho"]                   = rho
 # Load Image
 original_image = mpimg.imread(original_image_path)
 if if_show_original_image:
-	plt.figure()
-	plt.imshow(original_image)
+    plt.figure()
+    plt.imshow(original_image)
 
 
 # ===============================================
@@ -181,8 +182,8 @@ processed_image = processImage(original_image, process_parameters_bundle)
 # Find traget region
 target_region = scope(original_image, processed_image, vertices_parameters_bundle)
 if if_show_target_region:
-	plt.figure()
-	plt.imshow(target_region)
+    plt.figure()
+    plt.imshow(target_region)
 
 
 # ===============================================
@@ -194,7 +195,7 @@ line_image = draw(original_image, target_region, draw_parameters_bundle)
 # Combine
 final_image = mixing(original_image, line_image, 0)
 if if_show_final_image:
-	plt.figure()
+    plt.figure()
     plt.imshow(final_image)
 
 
