@@ -67,6 +67,13 @@ rho                   = 2
 
 
 # ===============================================
+# Top Level
+if_show_original_image = True
+if_show_target_region  = True
+if_show_final_image    = True
+
+
+# ===============================================
 # Integrate Database Parameters
 original_image_path = image_folder + slash + original_image_name
 
@@ -160,8 +167,9 @@ draw_parameters_bundle["rho"]                   = rho
 # ===============================================
 # Load Image
 original_image = mpimg.imread(original_image_path)
-plt.figure()
-plt.imshow(original_image)
+if if_show_original_image:
+	plt.figure()
+	plt.imshow(original_image)
 
 
 # ===============================================
@@ -172,6 +180,9 @@ processed_image = processImage(original_image, process_parameters_bundle)
 # ===============================================
 # Find traget region
 target_region = scope(original_image, processed_image, vertices_parameters_bundle)
+if if_show_target_region:
+	plt.figure()
+	plt.imshow(target_region)
 
 
 # ===============================================
@@ -182,13 +193,9 @@ line_image = draw(original_image, target_region, draw_parameters_bundle)
 # ===============================================
 # Combine
 final_image = mixing(original_image, line_image, 0)
-plt.figure()
-plt.imshow(final_image)
-
-
-# ===============================================
-# plt.imshow(input_image)
-#plt.imshow(labeled_image)
+if if_show_final_image:
+	plt.figure()
+    plt.imshow(final_image)
 
 
 # ===============================================
