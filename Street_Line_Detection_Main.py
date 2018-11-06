@@ -18,7 +18,7 @@ slash = "\\"
 # ===============================================
 # Changeable Database Parameters
 image_folder        = "C:\\Street-View-Analysis\\Data"
-original_image_name = "solidWhiteCurve.jpg"
+original_image_name = "solidWhiteRight.jpg"
 output_image_name   = ""
 video_folder        = "C:\\Street-View-Analysis\\Data"
 input_video_name    = "solidWhiteRight.mp4"
@@ -56,7 +56,7 @@ if_show_left_cluster  = True
 if_show_scatters      = True
 min_line_length       = 10     # 10
 slope_threshold       = 0
-painting_color        = 255
+painting_color        = (0, 255, 255)
 max_line_gap          = 10
 line_channel          = 3
 theta_degree          = 1
@@ -64,7 +64,7 @@ draw_height           = 0.6
 threshold             = 15
 data_type             = np.uint8
 thick                 = 10
-rho                   = 2
+rho                   = 3
 
 
 # ===============================================
@@ -87,7 +87,6 @@ blur_kernel = (blur_kernel_size, blur_kernel_size)
 # ===============================================
 # Integrate Drawing Parameters
 theta_radius   = theta_degree * np.pi / 180
-painting_color = [painting_color, 0, 0]
 
 
 # ===============================================

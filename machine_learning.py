@@ -25,7 +25,7 @@ def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width):
         # ===============================================
         # Prepare Validation
         num_valid_cluster = 0
-        total_score       = 0
+        scores            = {}
         X1_all            = []
         X2_all            = []
         
@@ -51,14 +51,19 @@ def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width):
                 
                 # ===============================================
                 # Get coefficient
-                score       = reg.score(reg_data[:, 0].reshape(-1, 1), reg_data[:, 1])
-                total_score = total_score + score
+                score = reg.score(reg_data[:, 0].reshape(-1, 1), reg_data[:, 1])
+                
+                
+                # ===============================================
+                # Scores          
+                scores[label] = score
                 
                 
                 # ===============================================
                 # Get drawing points for X coordinate
                 X1 = (Y1 - b) / k
                 X2 = (Y2 - b) / k
+                
                 
                 # ===============================================
                 # Append X coordinates to lists
@@ -72,8 +77,8 @@ def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width):
         
         
         # ===============================================
-        # Check if this is a good cluster
-        avg_score = total_score / num_valid_cluster
+        # Check if this is a good clustering
+        avg_score = sum(scores.values()) / len(scores.keys())
         if abs(avg_score - 1) <= abs(best_avg_score - 1):
             
             
@@ -81,12 +86,48 @@ def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width):
             # Update
             best_avg_score               = avg_score 
             best_cluster_dict            = {}
+            best_cluster_dict["scores"]  = scores
             best_cluster_dict["X1_all"]  = X1_all
             best_cluster_dict["X2_all"]  = X2_all
             best_cluster_dict["labels"]  = labels
             best_cluster_dict["cluster"] = cluster
-            
+     
+        
+    # ===============================================
+    # Try to reduce the number of clusters
+    print(best_avg_score)
+    print(best_cluster_dict["scores"])
+    best_scores = best_cluster_dict["scores"]
+    labels = best_cluster_dict["labels"]
+    for vassal_label in list(set(labels)):
+        for suzerain_label in list(set(labels)):
+            print('------------------------------------')
+            print(vassal_label, suzerain_label)
+            temp_scores = best_scores.copy()
+            if vassal_label != suzerain_label:
+                print(temp_scores)
 
+                vassal_indices   = np.where(labels == vassal_label)[0].tolist()
+                suzerain_indices = np.where(labels == suzerain_label)[0].tolist()
+                indices          = np.concatenate((vassal_indices, suzerain_indices))
+                reg_data         = train_data[indices]
+                reg              = LinearRegression().fit(reg_data[:, 0].reshape(-1, 1), reg_data[:, 1])
+                k     = reg.coef_[0]
+                b     = reg.intercept_
+                score = reg.score(reg_data[:, 0].reshape(-1, 1), reg_data[:, 1])
+                
+                temp_scores[suzerain_label] = score
+                print(temp_scores)
+                temp_scores.pop(vassal_label, None)
+                merged_avg_scores = sum(temp_scores.values()) / len(temp_scores.keys())
+                print(temp_scores)
+                print(merged_avg_scores)
+                if abs(merged_avg_scores - 1) <= abs(best_avg_score - 1):
+                    best_avg_score = merged_avg_scores
+                    print(merged_avg_scores)
+                
+                
+                
     # ===============================================
     # If we want to see clusters
     if if_show_cluster:

@@ -64,8 +64,7 @@ def draw(original_image, input_image, draw_parameters_bundle):
                 
         # ===============================================
         # Calculate Slopes
-        slope = (y2 - y1) / (x2 - x1)
-        print(slope, x1, x2)     
+        slope = (y2 - y1) / (x2 - x1)    
         
         
         # ===============================================
