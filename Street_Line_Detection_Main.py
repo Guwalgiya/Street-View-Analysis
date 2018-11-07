@@ -18,7 +18,7 @@ slash = "\\"
 # ===============================================
 # Changeable Database Parameters
 image_folder        = "C:\\Street-View-Analysis\\Data"
-original_image_name = "solidWhiteRight.jpg"
+original_image_name = "solidWhiteCurve.jpg"
 output_image_name   = ""
 video_folder        = "C:\\Street-View-Analysis\\Data"
 input_video_name    = "solidWhiteRight.mp4"
@@ -56,8 +56,8 @@ if_show_left_cluster  = True
 if_show_scatters      = True
 min_line_length       = 10     # 10
 slope_threshold       = 0
-painting_color        = (0, 255, 255)
-max_line_gap          = 10
+painting_color        = (255, 255, 0)
+max_line_gap          = 8
 line_channel          = 3
 theta_degree          = 1
 draw_height           = 0.6

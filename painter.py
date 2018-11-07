@@ -1,6 +1,6 @@
 # ===============================================
 # Import Packages and Functions
-from   cv2               import HoughLinesP, line, addWeighted
+from   cv2               import HoughLinesP, line, addWeighted, putText, LINE_AA
 from   machine_learning  import clusteringPoints
 import numpy             as     np
 import matplotlib.pyplot as     plt
@@ -100,13 +100,13 @@ def draw(original_image, input_image, draw_parameters_bundle):
     # ===============================================
     # Get Crucial Points for the left section
     train_data_left           = np.column_stack((left_X, left_Y))
-    left_X1_all, left_X2_all  = clusteringPoints(train_data_left,    if_show_left_cluster, Y1, Y2, height, width)
+    left_X1_all, left_X2_all, num_left_lines  = clusteringPoints(train_data_left,    if_show_left_cluster, Y1, Y2, height, width)
 
 
     # ===============================================
     # Get Crucial Points for the Right section
     train_data_right            = np.column_stack((right_X, right_Y))
-    right_X1_all, right_X2_all  = clusteringPoints(train_data_right, if_show_right_cluster, Y1, Y2, height, width)
+    right_X1_all, right_X2_all, num_right_lines  = clusteringPoints(train_data_right, if_show_right_cluster, Y1, Y2, height, width)
     
     
     # ===============================================
@@ -120,7 +120,7 @@ def draw(original_image, input_image, draw_parameters_bundle):
     for X1, X2 in np.column_stack((X1_all, X2_all)):
         line_image = line(line_image, (int(X1),  int(Y1)), (int(X2),  int(Y2)), painting_color, thickness)
 
-
+    putText(line_image, str(num_left_lines + num_right_lines), (150, 150), LINE_AA, 5, painting_color, thickness)
     # ===============================================
     return line_image
 
@@ -132,7 +132,7 @@ def mixing(original_image, line_image, mixing_para_bundle):
     
     
     # ===============================================
-    mixed_picture = addWeighted(line_image, 0.8, original_image, 1, 0.) 
+    mixed_picture = addWeighted(line_image, 1, original_image, 1, 0.) 
     
     # ===============================================
     return mixed_picture
