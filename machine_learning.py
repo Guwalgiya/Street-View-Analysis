@@ -97,40 +97,80 @@ def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width):
         
     # ===============================================
     # Try to reduce the number of clusters
-    can_be_reduced = True
     while (len(best_scores) > 1):
+        
+        
+        # ===============================================
+        # Initialization & n choose 2
         if_reduced = False
         label_comb = combinations(list(set(best_labels)), 2)
+        
+        
+        # ===============================================
+        # True to merge vassal_label to suzerain_label
         for vassal_label, suzerain_label in label_comb:
+            
+            
+            # ===============================================
+            # Get Merged Indices
             vassal_indices   = np.where(best_labels == vassal_label)[0].tolist()
             suzerain_indices = np.where(best_labels == suzerain_label)[0].tolist()
             indices          = np.concatenate((vassal_indices, suzerain_indices))
-    
-            reg_data         = train_data[indices]
-            reg              = LinearRegression().fit(reg_data[:, 0].reshape(-1, 1), reg_data[:, 1])
-            k     = reg.coef_[0]
-            b     = reg.intercept_
-            score = reg.score(reg_data[:, 0].reshape(-1, 1), reg_data[:, 1])
-            new_scores = [pair for pair in best_scores if (pair[0] != vassal_label and pair[0] != suzerain_label)]
-            new_scores.append([suzerain_label, score])
-            avg_score = sum(pair[1] for pair in new_scores) / len(new_scores)
+            
+            
+            # ===============================================
+            # Do Regression for merged Data
+            reg_data = train_data[indices]
+            reg      = LinearRegression().fit(reg_data[:, 0].reshape(-1, 1), reg_data[:, 1])
+            score    = reg.score(reg_data[:, 0].reshape(-1, 1), reg_data[:, 1])
+            
+            
+            # ===============================================
+            # After merging two clusters, what are the scores for all clusters?
+            scores    = [pair for pair in best_scores 
+                         if (pair[0] != vassal_label and pair[0] != suzerain_label)]
+            scores.append([suzerain_label, score])
+            avg_score = sum(pair[1] for pair in scores) / len(scores)
+            
+            
+            # ===============================================
+            # Does this merging actuall help us??? 
+            # 0.05 is tolerance because we want to merge some clusters
             if abs(avg_score - 1) <= abs(best_avg_score - 1) + 0.05:
-                new_X1 = (Y1 - b) / k
-                new_X2 = (Y2 - b) / k
-                best_avg_score = avg_score
                 
+                
+                # ===============================================
+                # Save information if  we want to use this merge later
+                k              = reg.coef_[0]
+                b              = reg.intercept_
+                new_X1         = (Y1 - b) / k
+                new_X2         = (Y2 - b) / k
                 removed_label  = vassal_label
                 merged_label   = suzerain_label
-                if_reduced        = True
-        
-        
+                
+                
+                # ===============================================
+                # Useful for next loop round
+                best_avg_score = avg_score
+                if_reduced     = True
+         
+            
+        # ===============================================
+        # If num of clusters is reduced, we use the best merging
         if if_reduced:        
-            best_scores = new_scores
+            
+            
+            # ===============================================
+            # Update information for drawing
             best_labels = [merged_label if item == removed_label else item for item in best_labels]
             best_X1_all = [pair for pair in best_X1_all if (pair[0] != removed_label and pair[0] != merged_label)]
-            best_X1_all.append([merged_label, new_X1])
             best_X2_all = [pair for pair in best_X2_all if (pair[0] != removed_label and pair[0] != merged_label)]
+            best_X1_all.append([merged_label, new_X1])
             best_X2_all.append([merged_label, new_X2])
+        
+        
+        # ===============================================
+        # If not reduced, we just what we have before
         else:
             break
         
@@ -143,4 +183,4 @@ def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width):
       plt.gca().invert_yaxis()
         
       
-    return [pair[1] for pair in best_X1_all], [pair[1] for pair in best_X2_all], len(best_scores)
+    return [pair[1] for pair in best_X1_all], [pair[1] for pair in best_X2_all], len(list(set(best_labels)))
