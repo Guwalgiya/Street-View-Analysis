@@ -18,7 +18,7 @@ slash = "\\"
 # ===============================================
 # Changeable Database Parameters
 image_folder        = "C:\\Street-View-Analysis\\Data"
-original_image_name = "solidWhiteCurve.jpg"
+original_image_name = "solidWhiteRight.jpg"
 output_image_name   = ""
 video_folder        = "C:\\Street-View-Analysis\\Data"
 input_video_name    = "solidWhiteRight.mp4"
@@ -29,32 +29,32 @@ output_video_name   = "white.mp4"
 # Changeable Process Parameters
 blur_kernel_size = 1
 sigma_X          = 0
-low_threshold    = 50
+low_threshold    = 100
 high_threshold   = 150
-lower_white      = [150, 150, 150] #200 200 200
+lower_white      = [180, 180, 180] #200 200 200
 upper_white      = [255, 255, 255]
 lower_yellow     = [90,  100, 100]
 upper_yellow     = [110, 255, 255]
 white_weight     = 1
-yellow_weight    = 1
+yellow_weight    = 0
 gamma            = 0
 
 
 # ===============================================
 # Target Region Parameters
-trap_bottom_width = 1 #0.85
-trap_top_width    = 1  #0.7
-trap_height       = 0.34 #0.4
+trap_bottom_width = 1     # 0.85
+trap_top_width    = 1     # 0.7
+trap_height       = 0.34   # 0.4
 mask_color        = 255  
 if_show_region    = False
 
 
 # ===============================================
 # Hough Transform
-if_show_right_cluster = True
+if_show_right_cluster = False
 if_show_left_cluster  = True
 if_show_scatters      = True
-min_line_length       = 10     # 10
+min_line_length       = 5     # 10
 slope_threshold       = 0
 painting_color        = (255, 255, 0)
 max_line_gap          = 5
@@ -63,14 +63,14 @@ theta_degree          = 1
 draw_height           = 0.6
 threshold             = 15
 data_type             = np.uint8
-thick                 = 10
+thick                 = 7
 rho                   = 3
 
 
 # ===============================================
 # Top Level
-if_show_original_image = True
-if_show_target_region  = True
+if_show_original_image = False
+if_show_target_region  = False
 if_show_final_image    = True
 
 
@@ -164,9 +164,14 @@ draw_parameters_bundle["thick"]                 = thick
 draw_parameters_bundle["rho"]                   = rho
 
 
+
+
 # ===============================================
 # Load Image
 original_image = mpimg.imread(original_image_path)
+
+#input_clip     = VideoFileClip(video_folder + slash + input_video_name)
+#original_image = input_clip.get_frame(1)
 if if_show_original_image:
     plt.figure()
     plt.imshow(original_image)
@@ -180,9 +185,7 @@ processed_image = processImage(original_image, process_parameters_bundle)
 # ===============================================
 # Find traget region
 target_region = scope(original_image, processed_image, vertices_parameters_bundle)
-if if_show_target_region:
-    plt.figure()
-    plt.imshow(target_region)
+
 
 
 # ===============================================
@@ -199,5 +202,23 @@ if if_show_final_image:
 
 
 # ===============================================
-#video_clip = VideoFileClip(video_folder + slash + video_name_in)
-#print(video_clip)
+def ensemble(input_image):
+    processed_image = processImage(input_image, process_parameters_bundle)
+    target_region   = scope(input_image, processed_image, vertices_parameters_bundle)
+    line_image      = draw(input_image, target_region, draw_parameters_bundle)
+    final_image     = mixing(input_image, line_image, 0)
+    
+
+    
+    if if_show_final_image:
+        plt.figure()
+        plt.imshow(final_image)
+    
+    return final_image
+
+
+# =============================================== 
+#print("Working on Videos")
+input_clip  = VideoFileClip(video_folder + slash + input_video_name)
+output_clip = input_clip.fl_image(ensemble) 
+output_clip.write_videofile(output_video_name, audio = False)

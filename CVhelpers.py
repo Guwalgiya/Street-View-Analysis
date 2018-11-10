@@ -1,6 +1,6 @@
 # ===============================================
 # Import Packages and Functions
-from   cv2               import addWeighted, bitwise_and, COLOR_BGR2HSV, cvtColor, inRange
+from   cv2               import addWeighted, bitwise_and, bitwise_or, COLOR_BGR2HSV, cvtColor, inRange
 import numpy             as     np
 import matplotlib.pyplot as     plt
 
@@ -26,6 +26,7 @@ def colorFilter(input_image, colorFilter_para_bundle):
     lower_yellow = np.array(lower_yellow)
     upper_yellow = np.array(upper_yellow)
     
+    
     # ===============================================
     # Change Dimension  
     hsv_image = cvtColor(input_image,    COLOR_BGR2HSV)
@@ -41,8 +42,10 @@ def colorFilter(input_image, colorFilter_para_bundle):
     # Add Mask
     yellow_image = bitwise_and(input_image, input_image,   mask = yellow_mask)
     white_image  = bitwise_and(input_image, input_image,   mask = white_mask)
-
+    plt.figure()
+    plt.imshow(white_mask)
         
+    
     # ===============================================
     # Combine two masked picture
     image_out = addWeighted(white_image,  white_weight, 

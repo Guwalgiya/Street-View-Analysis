@@ -136,7 +136,7 @@ def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width):
             # ===============================================
             # Does this merging actuall help us??? 
             # 0.05 is tolerance because we want to merge some clusters
-            if abs(avg_score - 1) <= abs(best_avg_score - 1) + 0.05:
+            if abs(avg_score - 1) <= abs(best_avg_score - 1) + 0.08:
                 
                 
                 # ===============================================

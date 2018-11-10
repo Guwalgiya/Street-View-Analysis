@@ -71,20 +71,41 @@ def draw(original_image, input_image, draw_parameters_bundle):
         # Seperate Points
         if abs(slope) > slope_threshold:
                       
-
+            # ===============================================
+            # Seperate Points: Points to the Left
+            if slope < 0 and x1 < center_x and x2 < center_x:
+                #left_X.append((x1 + x2) / 2)
+                #left_Y.append((y1 + y2) / 2)
+                left_X.append(x1)
+                left_X.append(x2)
+                left_Y.append(y1)
+                left_Y.append(y2)
+                
+                
+            # ===============================================
+            # Seperate Points: Points to the Right
+            elif slope > 0 and x1 > center_x and x2 > center_x:
+                #right_X.append((x1 + x2) / 2)
+                #right_Y.append((y1 + y2) / 2)
+                right_X.append(x1)
+                right_X.append(x2)
+                right_Y.append(y1)
+                right_Y.append(y2)
+                
+        else:
+            
             # ===============================================
             # Seperate Points: Points to the Left
             if slope < 0 and x1 < center_x and x2 < center_x:
                 left_X.append((x1 + x2) / 2)
                 left_Y.append((y1 + y2) / 2)
-                               
+                
                 
             # ===============================================
             # Seperate Points: Points to the Right
             elif slope > 0 and x1 > center_x and x2 > center_x:
                 right_X.append((x1 + x2) / 2)
                 right_Y.append((y1 + y2) / 2)
-                    
 
     # ===============================================
     # Prepare for drawing
@@ -117,6 +138,8 @@ def draw(original_image, input_image, draw_parameters_bundle):
         line_image = line(line_image, (int(X1),  int(Y1)), (int(X2),  int(Y2)), painting_color, thickness)
 
     putText(line_image, str(num_left_lines + num_right_lines), (150, 150), LINE_AA, 5, painting_color, thickness)
+    
+    
     # ===============================================
     return line_image
 
