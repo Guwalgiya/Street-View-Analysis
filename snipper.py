@@ -3,7 +3,7 @@
 from   cv2               import fillPoly, bitwise_and, line
 import numpy             as     np
 import matplotlib.pyplot as     plt
-import matplotlib.image  as     mpimg
+
 
 # ===============================================
 # Function getVertices

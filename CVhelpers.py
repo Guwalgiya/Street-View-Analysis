@@ -1,8 +1,9 @@
 # ===============================================
 # Import Packages and Functions
-from   cv2               import addWeighted, bitwise_and, bitwise_or, COLOR_BGR2HSV, cvtColor, inRange
+from   cv2               import addWeighted, bitwise_and, COLOR_BGR2HSV, cvtColor, inRange
 import numpy             as     np
 import matplotlib.pyplot as     plt
+
 
 # ===============================================
 # Function: whiteFilter

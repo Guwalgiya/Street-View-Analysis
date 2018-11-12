@@ -2,7 +2,6 @@
 # Import Packages and Functions
 from   processImages     import processImage
 from   moviepy.editor    import VideoFileClip
-from   IPython.display   import HTML
 from   snipper           import scope
 from   painter           import draw, mixing
 import matplotlib.pyplot as     plt
@@ -145,6 +144,7 @@ vertices_parameters_bundle["t_bwidth"]       = trap_bottom_width
 vertices_parameters_bundle["thickness"]      = thick
 vertices_parameters_bundle["if_show_region"] = if_show_region
 
+
 # ===============================================
 # Arrange Painter Parameters
 draw_parameters_bundle                          = {}
@@ -170,8 +170,8 @@ draw_parameters_bundle["rho"]                   = rho
 # Load Image
 original_image = mpimg.imread(original_image_path)
 
-#input_clip     = VideoFileClip(video_folder + slash + input_video_name)
-#original_image = input_clip.get_frame(1)
+input_clip     = VideoFileClip(video_folder + slash + input_video_name)
+original_image = input_clip.get_frame(3)
 if if_show_original_image:
     plt.figure()
     plt.imshow(original_image)
@@ -219,6 +219,6 @@ def ensemble(input_image):
 
 # =============================================== 
 #print("Working on Videos")
-input_clip  = VideoFileClip(video_folder + slash + input_video_name)
-output_clip = input_clip.fl_image(ensemble) 
-output_clip.write_videofile(output_video_name, audio = False)
+#input_clip  = VideoFileClip(video_folder + slash + input_video_name)
+#output_clip = input_clip.fl_image(ensemble) 
+#output_clip.write_videofile(output_video_name, audio = False)

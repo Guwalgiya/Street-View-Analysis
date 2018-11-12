@@ -2,7 +2,7 @@
 # Import Packages and Functions
 from   cv2               import cvtColor, GaussianBlur, Canny, COLOR_BGR2GRAY
 from   CVhelpers         import colorFilter
-import matplotlib.pyplot as     plt
+
 
 # ===============================================
 def processImage(input_image, process_parameters_bundle):
