@@ -11,7 +11,7 @@ from   itertools            import combinations
 # Use GMM to classify lines
 def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width, side):
     #num_cluster_choices = [1, 2, 3, 4] 
-    if side == "left":
+    if side == "L":
     	num_cluster_choices = [4]
     else:
     	num_cluster_choices = [1]
@@ -25,8 +25,8 @@ def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width, side):
         
         # ===============================================
         # Do Clustering
-        cluster     = GMM(n_components = num_cluster, covariance_type = "full")
-        labels      = cluster.fit_predict(train_data)
+        cluster = GMM(n_components = num_cluster, covariance_type = "full")
+        labels  = cluster.fit_predict(train_data)
         
         
         # ===============================================
@@ -40,7 +40,7 @@ def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width, side):
         # ===============================================
         # Start Validation
         for label in range(num_cluster):
-            indices  = np.where(labels == label)[0].tolist()
+            indices = np.where(labels == label)[0].tolist()
 
 
             # ===============================================
@@ -52,13 +52,13 @@ def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width, side):
                 
                 # ===============================================
                 # Get coefficient
-                k     = reg.coef_[0]
-                b     = reg.intercept_
+                k = reg.coef_[0]
+                b = reg.intercept_
                 
                 
                 # ===============================================
                 # Avoid Bad k-values
-                if (side == "left" and k > 0) or (side == "right" and k < 0):
+                if (side == "L" and k > 0) or (side == "R" and k < 0):
                     scores.append([-1, 1000])
                     break
                 
@@ -142,15 +142,17 @@ def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width, side):
             scores.append([suzerain_label, score])
             
         
+
             # ===============================================
             # Get Average
             avg_score = sum(pair[1] for pair in scores) / len(scores)
             
             
+
             # ===============================================
             # Also need to worry about k
             temp_k = reg.coef_[0]
-            if (side == "left" and temp_k <=0) or (side == "right" and temp_k >= 0):
+            if (side == "L" and temp_k <=0) or (side == "R" and temp_k >= 0):
                 valid_k = True
             else:
                 valid_k = False

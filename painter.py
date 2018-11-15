@@ -12,20 +12,20 @@ def draw(original_image, input_image, draw_parameters_bundle):
     
     # ===============================================
     # Get Parameters
-    if_show_right_cluster = draw_parameters_bundle["if_show_right_cluster"]
-    if_show_left_cluster  = draw_parameters_bundle["if_show_left_cluster"]
-    if_show_scatters      = draw_parameters_bundle["if_show_scatters"]
-    min_line_length       = draw_parameters_bundle["min_len"]  
-    slope_threshold       = draw_parameters_bundle["s_threshold"]
-    painting_color        = draw_parameters_bundle["color"] 
-    drawing_height        = draw_parameters_bundle["draw_height"]
-    line_channel          = draw_parameters_bundle["channel"]
-    max_line_gap          = draw_parameters_bundle["max_gap"]  
-    threshold             = draw_parameters_bundle["h_threshold"] 
-    data_type             = draw_parameters_bundle["d_type"]  
-    thickness             = draw_parameters_bundle["thick"] 
-    theta                 = draw_parameters_bundle["theta"]     
-    rho                   = draw_parameters_bundle["rho"]    
+    if_show_R_cluster = draw_parameters_bundle["if_show_R_cluster"]
+    if_show_L_cluster = draw_parameters_bundle["if_show_L_cluster"]
+    if_show_scatters  = draw_parameters_bundle["if_show_scatters"]
+    min_line_length   = draw_parameters_bundle["min_len"]  
+    slope_threshold   = draw_parameters_bundle["s_threshold"]
+    painting_color    = draw_parameters_bundle["color"] 
+    drawing_height    = draw_parameters_bundle["draw_height"]
+    line_channel      = draw_parameters_bundle["channel"]
+    max_line_gap      = draw_parameters_bundle["max_gap"]  
+    threshold         = draw_parameters_bundle["h_threshold"] 
+    data_type         = draw_parameters_bundle["d_type"]  
+    thickness         = draw_parameters_bundle["thick"] 
+    theta             = draw_parameters_bundle["theta"]     
+    rho               = draw_parameters_bundle["rho"]    
     
     
     # ===============================================
@@ -48,10 +48,14 @@ def draw(original_image, input_image, draw_parameters_bundle):
         
     # ===============================================
     # Initializing
-    right_X  = []
-    right_Y  = []
-    left_X   = []
-    left_Y   = []
+    R_X      = []
+    R_Y      = []
+    L_X      = []
+    L_Y      = []
+
+
+    # ===============================================
+    # Frame Information 
     height   = original_image.shape[0]
     width    = original_image.shape[1]
     center_x = width  / 2
@@ -73,36 +77,36 @@ def draw(original_image, input_image, draw_parameters_bundle):
                       
             
             # ===============================================
-            # Seperate Points: Points to the Left
+            # Seperate Points: Points to the L
             if slope < 0 and x1 < center_x and x2 < center_x:
-                left_X.append(x1)
-                left_X.append(x2)
-                left_Y.append(y1)
-                left_Y.append(y2)
+                L_X.append(x1)
+                L_X.append(x2)
+                L_Y.append(y1)
+                L_Y.append(y2)
                 
                 
             # ===============================================
-            # Seperate Points: Points to the Right
+            # Seperate Points: Points to the R
             elif slope > 0 and x1 > center_x and x2 > center_x:
-                right_X.append(x1)
-                right_X.append(x2)
-                right_Y.append(y1)
-                right_Y.append(y2)
+                R_X.append(x1)
+                R_X.append(x2)
+                R_Y.append(y1)
+                R_Y.append(y2)
                 
         else:
             
             # ===============================================
-            # Seperate Points: Points to the Left
+            # Seperate Points: Points to the L
             if slope < 0 and x1 < center_x and x2 < center_x:
-                left_X.append((x1 + x2) / 2)
-                left_Y.append((y1 + y2) / 2)
+                L_X.append((x1 + x2) / 2)
+                L_Y.append((y1 + y2) / 2)
                 
                 
             # ===============================================
-            # Seperate Points: Points to the Right
+            # Seperate Points: Points to the R
             elif slope > 0 and x1 > center_x and x2 > center_x:
-                right_X.append((x1 + x2) / 2)
-                right_Y.append((y1 + y2) / 2)
+                R_X.append((x1 + x2) / 2)
+                R_Y.append((y1 + y2) / 2)
 
 
     # ===============================================
@@ -114,59 +118,65 @@ def draw(original_image, input_image, draw_parameters_bundle):
     
     # ===============================================
     # Make 2-D points
-    train_data_left  = np.column_stack((left_X, left_Y))
-    train_data_right = np.column_stack((right_X, right_Y))
+    train_data_L = np.column_stack((L_X, L_Y))
+    train_data_R = np.column_stack((R_X, R_Y))
     
     
     # ===============================================
-    dict_train_data_left  = np.load("train_data_left.npy").item()
-    dict_train_data_right = np.load("train_data_right.npy").item()
+    dict_train_data_L = np.load("train_data_L.npy").item()
+    dict_train_data_R = np.load("train_data_R.npy").item()
+    
     
     # ===============================================
-    initial_data_array        = np.array([])
-    initial_data_array        = initial_data_array.reshape((len(initial_data_array), 2))
-    previous_train_data_left  = initial_data_array
-    previous_train_data_right = initial_data_array
+    initial_data_array    = np.array([])
+    initial_data_array    = initial_data_array.reshape((len(initial_data_array), 2))
+    previous_train_data_L = initial_data_array
+    previous_train_data_R = initial_data_array
     
     
     # ===============================================
     # Get more datapoints from previous frame when processing videos
-    for key in dict_train_data_left.keys():
-        previous_train_data_left  = np.concatenate((previous_train_data_left,  dict_train_data_left[int(key)]))
-        previous_train_data_right = np.concatenate((previous_train_data_right, dict_train_data_right[int(key)]))
+    for key in dict_train_data_L.keys():
+        previous_train_data_L = np.concatenate((previous_train_data_L, dict_train_data_L[int(key)]))
+        previous_train_data_R = np.concatenate((previous_train_data_R, dict_train_data_R[int(key)]))
+    
     
     # ===============================================        
-    max_key = max(dict_train_data_left.keys())
-    min_key = min(dict_train_data_left.keys())
-    dict_train_data_left.pop(min_key)
-    dict_train_data_right.pop(min_key)
-    dict_train_data_left[max_key + 1]  = train_data_left
-    dict_train_data_right[max_key + 1] = train_data_right
-    np.save("train_data_left.npy",  dict_train_data_left)
-    np.save("train_data_right.npy", dict_train_data_right)
+    max_key = max(dict_train_data_L.keys())
+    min_key = min(dict_train_data_L.keys())
+    
+    
+    # ===============================================
+    dict_train_data_L.pop(min_key)
+    dict_train_data_R.pop(min_key)
+    
+    
+    # ===============================================
+    dict_train_data_L[max_key + 1] = train_data_L
+    dict_train_data_R[max_key + 1] = train_data_R
+    
+    
+    # ===============================================
+    np.save("train_data_L.npy", dict_train_data_L)
+    np.save("train_data_R.npy", dict_train_data_R)
+
 
     # ===============================================
     # Get more datapoints from previous frame when processing videos
-    train_data_left  = np.concatenate((train_data_left,  previous_train_data_left))
-    train_data_right = np.concatenate((train_data_right, previous_train_data_right))
-    print(train_data_left.shape)
+    train_data_L = np.concatenate((train_data_L, previous_train_data_L))
+    train_data_R = np.concatenate((train_data_R, previous_train_data_R))
+
 
     # ===============================================
     # Get Crucial Points for the both sections
-    right_X1_all, right_X2_all, num_right_lines = clusteringPoints(train_data_right, if_show_right_cluster, Y1, Y2, height, width, "right")
-    left_X1_all,  left_X2_all,  num_left_lines  = clusteringPoints(train_data_left,  if_show_left_cluster,  Y1, Y2, height, width, "left")
+    R_X1_all, R_X2_all, num_R_lines = clusteringPoints(train_data_R, if_show_R_cluster, Y1, Y2, height, width, "R")
+    L_X1_all, L_X2_all, num_L_lines = clusteringPoints(train_data_L, if_show_L_cluster, Y1, Y2, height, width, "L")
     
-    
-
-
-    
-
-
     
     # ===============================================
     # Concatenate Vectors
-    X1_all = np.concatenate((left_X1_all, right_X1_all))
-    X2_all = np.concatenate((left_X2_all, right_X2_all))
+    X1_all = np.concatenate((L_X1_all, R_X1_all))
+    X2_all = np.concatenate((L_X2_all, R_X2_all))
     
     
     # ===============================================
@@ -174,7 +184,7 @@ def draw(original_image, input_image, draw_parameters_bundle):
     for X1, X2 in np.column_stack((X1_all, X2_all)):
         line_image = line(line_image, (int(X1),  int(Y1)), (int(X2),  int(Y2)), painting_color, thickness)
 
-    putText(line_image, str(num_left_lines + num_right_lines), (150, 150), LINE_AA, 5, painting_color, thickness)
+    putText(line_image, str(num_L_lines + num_R_lines), (150, 150), LINE_AA, 5, painting_color, thickness)
     
     
     # ===============================================
@@ -189,6 +199,7 @@ def mixing(original_image, line_image, mixing_para_bundle):
     
     # ===============================================
     mixed_picture = addWeighted(line_image, 1, original_image, 1, 0.) 
+    
     
     # ===============================================
     return mixed_picture

@@ -31,7 +31,7 @@ blur_kernel_size = 1
 sigma_X          = 0
 low_threshold    = 100
 high_threshold   = 150
-lower_white      = [150, 150, 150] #200 200 200
+lower_white      = [155, 155, 155] #200 200 200
 upper_white      = [255, 255, 255]
 lower_yellow     = [90,  100, 100]
 upper_yellow     = [110, 255, 255]
@@ -51,20 +51,20 @@ if_show_region    = False
 
 # ===============================================
 # Hough Transform
-if_show_right_cluster = False
-if_show_left_cluster  = False
-if_show_scatters      = False
-min_line_length       = 5     # 10
-slope_threshold       = 0
-painting_color        = (255, 255, 0)
-max_line_gap          = 5
-line_channel          = 3
-theta_degree          = 1
-draw_height           = 0.65
-threshold             = 15
-data_type             = np.uint8
-thick                 = 10
-rho                   = 3
+if_show_R_cluster = False
+if_show_L_cluster = False
+if_show_scatters  = False
+min_line_length   = 5     # 10
+slope_threshold   = 0
+painting_color    = (255, 255, 0)
+max_line_gap      = 5
+line_channel      = 3
+theta_degree      = 1
+draw_height       = 0.65
+threshold         = 15
+data_type         = np.uint8
+thick             = 10
+rho               = 3
 
 
 # ===============================================
@@ -86,7 +86,7 @@ blur_kernel = (blur_kernel_size, blur_kernel_size)
 
 # ===============================================
 # Integrate Drawing Parameters
-theta_radius   = theta_degree * np.pi / 180
+theta_radius = theta_degree * np.pi / 180
 
 
 # ===============================================
@@ -98,7 +98,7 @@ blur_para_bundle["sigma_X"] = sigma_X
 
 # ===============================================
 # Arrange all Parameters - Ground Floor
-canny_para_bundle = {}
+canny_para_bundle        = {}
 canny_para_bundle["l_t"] = low_threshold
 canny_para_bundle["h_t"] = high_threshold
 
@@ -148,40 +148,42 @@ vertices_parameters_bundle["if_show_region"] = if_show_region
 
 # ===============================================
 # Arrange Painter Parameters
-draw_parameters_bundle                          = {}
-draw_parameters_bundle["if_show_right_cluster"] = if_show_right_cluster
-draw_parameters_bundle["if_show_left_cluster"]  = if_show_left_cluster
-draw_parameters_bundle["if_show_scatters"]      = if_show_scatters
-draw_parameters_bundle["draw_height"]           = draw_height
-draw_parameters_bundle["h_threshold"]           = threshold
-draw_parameters_bundle["s_threshold"]           = slope_threshold
-draw_parameters_bundle["min_len"]               = min_line_length
-draw_parameters_bundle["max_gap"]               = max_line_gap
-draw_parameters_bundle["channel"]               = line_channel
-draw_parameters_bundle["d_type"]                = data_type 
-draw_parameters_bundle["color"]                 = painting_color
-draw_parameters_bundle["theta"]                 = theta_radius
-draw_parameters_bundle["thick"]                 = thick
-draw_parameters_bundle["rho"]                   = rho
+draw_parameters_bundle                      = {}
+draw_parameters_bundle["if_show_R_cluster"] = if_show_R_cluster
+draw_parameters_bundle["if_show_L_cluster"] = if_show_L_cluster
+draw_parameters_bundle["if_show_scatters"]  = if_show_scatters
+draw_parameters_bundle["draw_height"]       = draw_height
+draw_parameters_bundle["h_threshold"]       = threshold
+draw_parameters_bundle["s_threshold"]       = slope_threshold
+draw_parameters_bundle["min_len"]           = min_line_length
+draw_parameters_bundle["max_gap"]           = max_line_gap
+draw_parameters_bundle["channel"]           = line_channel
+draw_parameters_bundle["d_type"]            = data_type 
+draw_parameters_bundle["color"]             = painting_color
+draw_parameters_bundle["theta"]             = theta_radius
+draw_parameters_bundle["thick"]             = thick
+draw_parameters_bundle["rho"]               = rho
 
 
 # ===============================================
-# Prepare
+# Prepare I
 initial_data_array = np.array([])
 initial_data_array = initial_data_array.reshape((len(initial_data_array), 2))
-d = {}
+
+
+# ===============================================
+# Prepare II
+dict_empty = {}
 for i in range(12):
-    d[-i] = initial_data_array
-np.save("train_data_left.npy",  d)
-np.save("train_data_right.npy", d)
+    dict_empty[-i] = initial_data_array
+np.save("train_data_L.npy", dict_empty)
+np.save("train_data_R.npy", dict_empty)
 
 
 # ===============================================
 # Load Image
 original_image = mpimg.imread(original_image_path)
 
-#input_clip     = VideoFileClip(video_folder + slash + input_video_name)
-#original_image = input_clip.get_frame(1)
 if if_show_original_image:
     plt.figure()
     plt.imshow(original_image)
@@ -221,7 +223,6 @@ def ensemble(input_image):
 
 
 # =============================================== 
-print("Working on Videos")
 input_clip  = VideoFileClip(video_folder + slash + input_video_name)
 output_clip = input_clip.fl_image(ensemble) 
 output_clip.write_videofile(output_video_name, audio = False, verbose = False)
