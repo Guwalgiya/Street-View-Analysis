@@ -113,16 +113,55 @@ def draw(original_image, input_image, draw_parameters_bundle):
     
     
     # ===============================================
-    # Get Crucial Points for the left section
-    train_data_left           = np.column_stack((left_X, left_Y))
-    left_X1_all, left_X2_all, num_left_lines  = clusteringPoints(train_data_left,    if_show_left_cluster, Y1, Y2, height, width)
-
+    # Make 2-D points
+    train_data_left  = np.column_stack((left_X, left_Y))
+    train_data_right = np.column_stack((right_X, right_Y))
+    
+    
+    # ===============================================
+    dict_train_data_left  = np.load("train_data_left.npy").item()
+    dict_train_data_right = np.load("train_data_right.npy").item()
+    
+    # ===============================================
+    initial_data_array        = np.array([])
+    initial_data_array        = initial_data_array.reshape((len(initial_data_array), 2))
+    previous_train_data_left  = initial_data_array
+    previous_train_data_right = initial_data_array
+    
+    
+    # ===============================================
+    # Get more datapoints from previous frame when processing videos
+    for key in dict_train_data_left.keys():
+        previous_train_data_left  = np.concatenate((previous_train_data_left,  dict_train_data_left[int(key)]))
+        previous_train_data_right = np.concatenate((previous_train_data_right, dict_train_data_right[int(key)]))
+    
+    # ===============================================        
+    max_key = max(dict_train_data_left.keys())
+    min_key = min(dict_train_data_left.keys())
+    dict_train_data_left.pop(min_key)
+    dict_train_data_right.pop(min_key)
+    dict_train_data_left[max_key + 1]  = train_data_left
+    dict_train_data_right[max_key + 1] = train_data_right
+    np.save("train_data_left.npy",  dict_train_data_left)
+    np.save("train_data_right.npy", dict_train_data_right)
 
     # ===============================================
-    # Get Crucial Points for the Right section
-    train_data_right            = np.column_stack((right_X, right_Y))
-    right_X1_all, right_X2_all, num_right_lines  = clusteringPoints(train_data_right, if_show_right_cluster, Y1, Y2, height, width)
+    # Get more datapoints from previous frame when processing videos
+    train_data_left  = np.concatenate((train_data_left,  previous_train_data_left))
+    train_data_right = np.concatenate((train_data_right, previous_train_data_right))
+    print(train_data_left.shape)
+
+    # ===============================================
+    # Get Crucial Points for the both sections
+    right_X1_all, right_X2_all, num_right_lines = clusteringPoints(train_data_right, if_show_right_cluster, Y1, Y2, height, width, "right")
+    left_X1_all,  left_X2_all,  num_left_lines  = clusteringPoints(train_data_left,  if_show_left_cluster,  Y1, Y2, height, width, "left")
     
+    
+
+
+    
+
+
     
     # ===============================================
     # Concatenate Vectors

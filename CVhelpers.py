@@ -9,6 +9,7 @@ import matplotlib.pyplot as     plt
 # Function: whiteFilter
 def colorFilter(input_image, colorFilter_para_bundle):
     
+    
     # ===============================================
     # Load Parameters
     gamma         = colorFilter_para_bundle["gamma"]
@@ -43,15 +44,14 @@ def colorFilter(input_image, colorFilter_para_bundle):
     # Add Mask
     yellow_image = bitwise_and(input_image, input_image,   mask = yellow_mask)
     white_image  = bitwise_and(input_image, input_image,   mask = white_mask)
-    plt.figure()
-    plt.imshow(white_mask)
-        
+
     
     # ===============================================
     # Combine two masked picture
     image_out = addWeighted(white_image,  white_weight, 
                             yellow_image, yellow_weight,
                             gamma)
+    
     
     # ===============================================
     return image_out

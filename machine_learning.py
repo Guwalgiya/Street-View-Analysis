@@ -9,9 +9,12 @@ from   itertools            import combinations
 
 # ===============================================
 # Use GMM to classify lines
-def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width):
-    num_cluster_choices = [1, 2, 3, 4] 
-    best_cluster_dict   = {}
+def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width, side):
+    #num_cluster_choices = [1, 2, 3, 4] 
+    if side == "left":
+    	num_cluster_choices = [4]
+    else:
+    	num_cluster_choices = [1]
     best_avg_score      = np.inf
     
     
@@ -51,6 +54,13 @@ def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width):
                 # Get coefficient
                 k     = reg.coef_[0]
                 b     = reg.intercept_
+                
+                
+                # ===============================================
+                # Avoid Bad k-values
+                if (side == "left" and k > 0) or (side == "right" and k < 0):
+                    scores.append([-1, 1000])
+                    break
                 
                 
                 # ===============================================
@@ -130,18 +140,31 @@ def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width):
             scores    = [pair for pair in best_scores 
                          if (pair[0] != vassal_label and pair[0] != suzerain_label)]
             scores.append([suzerain_label, score])
+            
+        
+            # ===============================================
+            # Get Average
             avg_score = sum(pair[1] for pair in scores) / len(scores)
             
             
             # ===============================================
+            # Also need to worry about k
+            temp_k = reg.coef_[0]
+            if (side == "left" and temp_k <=0) or (side == "right" and temp_k >= 0):
+                valid_k = True
+            else:
+                valid_k = False
+                
+    
+            # ===============================================
             # Does this merging actuall help us??? 
             # 0.05 is tolerance because we want to merge some clusters
-            if abs(avg_score - 1) <= abs(best_avg_score - 1) + 0.08:
+            if (abs(avg_score - 1) <= abs(best_avg_score - 1) + 0.03) and valid_k:
                 
                 
                 # ===============================================
                 # Save information if  we want to use this merge later
-                k              = reg.coef_[0]
+                k              = temp_k
                 b              = reg.intercept_
                 new_X1         = (Y1 - b) / k
                 new_X2         = (Y2 - b) / k

@@ -2,6 +2,7 @@
 # Import Packages and Functions
 from   processImages     import processImage
 from   moviepy.editor    import VideoFileClip
+from   tempfile          import TemporaryFile
 from   snipper           import scope
 from   painter           import draw, mixing
 import matplotlib.pyplot as     plt
@@ -30,7 +31,7 @@ blur_kernel_size = 1
 sigma_X          = 0
 low_threshold    = 100
 high_threshold   = 150
-lower_white      = [180, 180, 180] #200 200 200
+lower_white      = [150, 150, 150] #200 200 200
 upper_white      = [255, 255, 255]
 lower_yellow     = [90,  100, 100]
 upper_yellow     = [110, 255, 255]
@@ -42,7 +43,7 @@ gamma            = 0
 # ===============================================
 # Target Region Parameters
 trap_bottom_width = 1     # 0.85
-trap_top_width    = 1     # 0.7
+trap_top_width    = 0.3     # 0.7
 trap_height       = 0.34   # 0.4
 mask_color        = 255  
 if_show_region    = False
@@ -51,18 +52,18 @@ if_show_region    = False
 # ===============================================
 # Hough Transform
 if_show_right_cluster = False
-if_show_left_cluster  = True
-if_show_scatters      = True
+if_show_left_cluster  = False
+if_show_scatters      = False
 min_line_length       = 5     # 10
 slope_threshold       = 0
 painting_color        = (255, 255, 0)
 max_line_gap          = 5
 line_channel          = 3
 theta_degree          = 1
-draw_height           = 0.6
+draw_height           = 0.65
 threshold             = 15
 data_type             = np.uint8
-thick                 = 7
+thick                 = 10
 rho                   = 3
 
 
@@ -70,7 +71,7 @@ rho                   = 3
 # Top Level
 if_show_original_image = False
 if_show_target_region  = False
-if_show_final_image    = True
+if_show_final_image    = False
 
 
 # ===============================================
@@ -164,14 +165,23 @@ draw_parameters_bundle["thick"]                 = thick
 draw_parameters_bundle["rho"]                   = rho
 
 
+# ===============================================
+# Prepare
+initial_data_array = np.array([])
+initial_data_array = initial_data_array.reshape((len(initial_data_array), 2))
+d = {}
+for i in range(12):
+    d[-i] = initial_data_array
+np.save("train_data_left.npy",  d)
+np.save("train_data_right.npy", d)
 
 
 # ===============================================
 # Load Image
 original_image = mpimg.imread(original_image_path)
 
-input_clip     = VideoFileClip(video_folder + slash + input_video_name)
-original_image = input_clip.get_frame(3)
+#input_clip     = VideoFileClip(video_folder + slash + input_video_name)
+#original_image = input_clip.get_frame(1)
 if if_show_original_image:
     plt.figure()
     plt.imshow(original_image)
@@ -205,20 +215,14 @@ if if_show_final_image:
 def ensemble(input_image):
     processed_image = processImage(input_image, process_parameters_bundle)
     target_region   = scope(input_image, processed_image, vertices_parameters_bundle)
-    line_image      = draw(input_image, target_region, draw_parameters_bundle)
+    line_image      = draw(original_image, target_region, draw_parameters_bundle)
     final_image     = mixing(input_image, line_image, 0)
-    
-
-    
-    if if_show_final_image:
-        plt.figure()
-        plt.imshow(final_image)
-    
     return final_image
 
 
 # =============================================== 
-#print("Working on Videos")
-#input_clip  = VideoFileClip(video_folder + slash + input_video_name)
-#output_clip = input_clip.fl_image(ensemble) 
-#output_clip.write_videofile(output_video_name, audio = False)
+print("Working on Videos")
+input_clip  = VideoFileClip(video_folder + slash + input_video_name)
+output_clip = input_clip.fl_image(ensemble) 
+output_clip.write_videofile(output_video_name, audio = False, verbose = False)
+
