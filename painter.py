@@ -214,8 +214,9 @@ def mixing(original_image, line_image, mixing_para_bundle):
     
     
     # ===============================================
-    mixed_picture = addWeighted(line_image_weight,     1, 
-                                original_image_weight, 1, mixer_gamma) 
+    mixed_picture = addWeighted(line_image,     line_image_weight, 
+                                original_image, original_image_weight, 
+                                mixer_gamma) 
     
     
     # ===============================================
