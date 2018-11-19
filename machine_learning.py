@@ -10,11 +10,18 @@ from   itertools            import combinations
 # ===============================================
 # Use GMM to classify lines
 def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width, side):
+    
+    
+    # ===============================================
     #num_cluster_choices = [1, 2, 3, 4] 
     if side == "L":
-    	num_cluster_choices = [4]
+        num_cluster_choices = [4]
     else:
-    	num_cluster_choices = [1]
+        num_cluster_choices = [1]
+        
+        
+    # ===============================================
+    # Initialize Average Score  
     best_avg_score      = np.inf
     
     

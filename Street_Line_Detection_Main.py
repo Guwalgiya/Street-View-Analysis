@@ -2,7 +2,6 @@
 # Import Packages and Functions
 from   processImages     import processImage
 from   moviepy.editor    import VideoFileClip
-from   tempfile          import TemporaryFile
 from   snipper           import scope
 from   painter           import draw, mixing
 import matplotlib.pyplot as     plt
@@ -65,6 +64,13 @@ threshold         = 15
 data_type         = np.uint8
 thick             = 10
 rho               = 3
+
+
+# ===============================================
+# Arrange Mixer Parameters
+mixer_gamma           = 0
+line_image_weight     = 1   
+original_image_weight = 1
 
 
 # ===============================================
@@ -163,6 +169,14 @@ draw_parameters_bundle["color"]             = painting_color
 draw_parameters_bundle["theta"]             = theta_radius
 draw_parameters_bundle["thick"]             = thick
 draw_parameters_bundle["rho"]               = rho
+
+
+# ===============================================
+# Arrange Mixer Parameters
+mixing_para_bundle                          = {}
+mixing_para_bundle["mixer_gamma"]           = mixer_gamma
+mixing_para_bundle["line_image_weight"]     = line_image_weight     
+mixing_para_bundle["original_image_weight"] = original_image_weight 
 
 
 # ===============================================

@@ -10,6 +10,7 @@ import matplotlib.pyplot as     plt
 # Function Draw
 def draw(original_image, input_image, draw_parameters_bundle):
     
+    
     # ===============================================
     # Get Parameters
     if_show_R_cluster = draw_parameters_bundle["if_show_R_cluster"]
@@ -66,6 +67,7 @@ def draw(original_image, input_image, draw_parameters_bundle):
     for cur_line in lines:
         x1, y1, x2, y2 = cur_line[0]  
                 
+        
         # ===============================================
         # Calculate Slopes
         slope = (y2 - y1) / (x2 - x1)    
@@ -183,7 +185,10 @@ def draw(original_image, input_image, draw_parameters_bundle):
     # Draw Lines
     for X1, X2 in np.column_stack((X1_all, X2_all)):
         line_image = line(line_image, (int(X1),  int(Y1)), (int(X2),  int(Y2)), painting_color, thickness)
-
+    
+    
+    # ===============================================
+    # Add number of lines to a frame
     putText(line_image, str(num_L_lines + num_R_lines), (150, 150), LINE_AA, 5, painting_color, thickness)
     
     
@@ -194,11 +199,23 @@ def draw(original_image, input_image, draw_parameters_bundle):
 # ===============================================
 # Function Mixing
 def mixing(original_image, line_image, mixing_para_bundle):
+    
+    
+    # ===============================================
+    # Function Mixing
     original_image = original_image.astype("uint8")
     
     
     # ===============================================
-    mixed_picture = addWeighted(line_image, 1, original_image, 1, 0.) 
+    # Get Parameters
+    line_image_weight     = mixing_para_bundle["line_image_weight"]
+    original_image_weight = mixing_para_bundle["original_image_weight"]
+    mixer_gamma           = mixing_para_bundle["mixer_gamma"]
+    
+    
+    # ===============================================
+    mixed_picture = addWeighted(line_image_weight,     1, 
+                                original_image_weight, 1, mixer_gamma) 
     
     
     # ===============================================
