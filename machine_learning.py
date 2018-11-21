@@ -10,7 +10,8 @@ from   itertools            import combinations
 # ===============================================
 # Use GMM to classify lines
 def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width, side):
-    
+    if side == "L":
+        print("-------------------New Frame")
     
     # ===============================================
     num_cluster_choices = [1, 2, 3, 4] 
@@ -34,7 +35,6 @@ def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width, side):
         
         # ===============================================
         # Prepare Validation
-        num_valid_cluster = 0
         scores            = []
         X1_all            = []
         X2_all            = []
@@ -90,12 +90,13 @@ def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width, side):
                 
                 # ===============================================
                 # Update Info
-                num_valid_cluster = num_valid_cluster + 1
         
         
         # ===============================================
         # Check if this is a good clustering
         avg_score = sum(pair[1] for pair in scores) / len(scores)
+        if side == "L":
+            print(num_cluster, avg_score)
         if abs(avg_score - 1) <= abs(best_avg_score - 1):
             
             
@@ -103,11 +104,15 @@ def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width, side):
             # Update
             best_avg_score               = avg_score 
             best_scores                  = scores
+            best_num_cluster            = num_cluster
             best_X1_all  = X1_all
             best_X2_all  = X2_all
             best_labels  = labels
      
-        
+    if side == "L":
+        print(best_num_cluster)  
+        print(best_avg_score)
+  
     # ===============================================
     # Try to reduce the number of clusters
     while (len(best_scores) > 1):
@@ -163,7 +168,7 @@ def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width, side):
     
             # ===============================================
             # Does this merging actuall help us??? 
-            # 0.05 is tolerance because we want to merge some clusters
+            # 0.03 is tolerance because we want to merge some clusters
             if (abs(avg_score - 1) <= abs(best_avg_score - 1) + 0.03) and valid_k:
                 
                 
@@ -190,6 +195,7 @@ def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width, side):
             
             # ===============================================
             # Update information for drawing
+            best_num_cluster  = best_num_cluster  - 1
             best_labels = [merged_label if item == removed_label else item for item in best_labels]
             best_X1_all = [pair for pair in best_X1_all if (pair[0] != removed_label and pair[0] != merged_label)]
             best_X2_all = [pair for pair in best_X2_all if (pair[0] != removed_label and pair[0] != merged_label)]
@@ -201,7 +207,8 @@ def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width, side):
         # If not reduced, we just what we have before
         else:
             break
-        
+    if side == "L":
+        print(best_num_cluster)
     # ===============================================
     # If we want to see clusters
     if if_show_cluster:

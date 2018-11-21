@@ -31,7 +31,7 @@ blur_kernel_size = 1
 sigma_X          = 0
 low_threshold    = 100
 high_threshold   = 150
-lower_white      = [155, 155, 155] #160 160 160
+lower_white      = [155, 155, 155] #155 155 155
 upper_white      = [255, 255, 255]
 lower_yellow     = [90,  100, 100]
 upper_yellow     = [110, 255, 255]
@@ -52,7 +52,7 @@ if_show_region    = False
 # ===============================================
 # Hough Transform
 if_show_R_cluster = False
-if_show_L_cluster = False
+if_show_L_cluster = True
 if_show_scatters  = False
 if_show_fit_lines = False
 min_line_length   = 5     # 10
@@ -215,13 +215,10 @@ processed_image = processImage(original_image, process_parameters_bundle)
 target_region = scope(original_image, processed_image, vertices_parameters_bundle)
 
 
-
 # ===============================================
 # Draw Lines
 line_image = draw(original_image, target_region, draw_parameters_bundle)
-if if_show_original_image:
-    plt.figure()
-    plt.imshow(line_image)
+
 
 # ===============================================
 # Combine
@@ -243,7 +240,7 @@ def ensemble(input_image):
 
 # =============================================== 
 # Call function ENSEMBLE to perform lane detection on a short video
-input_clip  = VideoFileClip(video_folder + slash + input_video_name)
+input_clip  = VideoFileClip(video_folder + slash + input_video_name).set_end(0.1)
 output_clip = input_clip.fl_image(ensemble) 
 output_clip.write_videofile(output_video_name, audio = False, verbose = False)
 
