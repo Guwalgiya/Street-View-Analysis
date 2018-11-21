@@ -1,9 +1,10 @@
 # ===============================================
 # Import Packages and Functions
-from   processImages     import processImage
 from   moviepy.editor    import VideoFileClip
+from   processImages     import processImage
 from   snipper           import scope
 from   painter           import draw, mixing
+from   os                import remove
 import matplotlib.pyplot as     plt
 import matplotlib.image  as     mpimg
 import numpy             as     np
@@ -30,7 +31,7 @@ blur_kernel_size = 1
 sigma_X          = 0
 low_threshold    = 100
 high_threshold   = 150
-lower_white      = [155, 155, 155] #200 200 200
+lower_white      = [155, 155, 155] #160 160 160
 upper_white      = [255, 255, 255]
 lower_yellow     = [90,  100, 100]
 upper_yellow     = [110, 255, 255]
@@ -50,10 +51,10 @@ if_show_region    = False
 
 # ===============================================
 # Hough Transform
-if_show_R_cluster = True
-if_show_L_cluster = True
-if_show_scatters  = True
-if_show_fit_lines = True
+if_show_R_cluster = False
+if_show_L_cluster = False
+if_show_scatters  = False
+if_show_fit_lines = False
 min_line_length   = 5     # 10
 slope_threshold   = 0
 painting_color    = (255, 255, 0)
@@ -76,9 +77,9 @@ original_image_weight = 1
 
 # ===============================================
 # Top Level
-if_show_original_image = True
+if_show_original_image = False
 if_show_target_region  = False
-if_show_final_image    = True
+if_show_final_image    = False
 
 
 # ===============================================
@@ -231,6 +232,7 @@ if if_show_final_image:
 
 
 # ===============================================
+# this function is used to work on videos
 def ensemble(input_image):
     processed_image = processImage(input_image, process_parameters_bundle)
     target_region   = scope(input_image, processed_image, vertices_parameters_bundle)
@@ -240,7 +242,13 @@ def ensemble(input_image):
 
 
 # =============================================== 
-#input_clip  = VideoFileClip(video_folder + slash + input_video_name)
-#output_clip = input_clip.fl_image(ensemble) 
-#output_clip.write_videofile(output_video_name, audio = False, verbose = False)
+# Call function ENSEMBLE to perform lane detection on a short video
+input_clip  = VideoFileClip(video_folder + slash + input_video_name)
+output_clip = input_clip.fl_image(ensemble) 
+output_clip.write_videofile(output_video_name, audio = False, verbose = False)
 
+
+# =============================================== 
+# Clean Temp File
+remove("train_data_L.npy")
+remove("train_data_R.npy")
