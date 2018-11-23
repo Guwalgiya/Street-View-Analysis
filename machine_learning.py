@@ -10,8 +10,7 @@ from   itertools            import combinations
 # ===============================================
 # Use GMM to classify lines
 def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width, side):
-    if side == "L":
-        print("-------------------New Frame")
+    
     
     # ===============================================
     num_cluster_choices = [1, 2, 3, 4] 
@@ -95,8 +94,7 @@ def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width, side):
         # ===============================================
         # Check if this is a good clustering
         avg_score = sum(pair[1] for pair in scores) / len(scores)
-        if side == "L":
-            print(num_cluster, avg_score)
+
         if abs(avg_score - 1) <= abs(best_avg_score - 1):
             
             
@@ -109,9 +107,6 @@ def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width, side):
             best_X2_all  = X2_all
             best_labels  = labels
      
-    if side == "L":
-        print(best_num_cluster)  
-        print(best_avg_score)
   
     # ===============================================
     # Try to reduce the number of clusters
@@ -207,8 +202,8 @@ def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width, side):
         # If not reduced, we just what we have before
         else:
             break
-    if side == "L":
-        print(best_num_cluster)
+
+
     # ===============================================
     # If we want to see clusters
     if if_show_cluster:
