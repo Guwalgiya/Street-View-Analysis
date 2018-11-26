@@ -242,7 +242,7 @@ def ensemble(input_image):
 # Call function ENSEMBLE to perform lane detection on a short video
 input_clip  = VideoFileClip(video_folder + slash + input_video_name).set_end(0.1)
 output_clip = input_clip.fl_image(ensemble) 
-output_clip.write_videofile(output_video_name, audio = False, verbose = False)
+#output_clip.write_videofile(output_video_name, audio = False, verbose = False)
 
 
 # =============================================== 

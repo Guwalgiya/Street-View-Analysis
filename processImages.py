@@ -7,6 +7,7 @@ from   CVhelpers         import colorFilter
 # ===============================================
 def processImage(input_image, process_parameters_bundle):
     
+    
     # ===============================================
     # Load All the Parameters
     blur_para_bundle        = process_parameters_bundle["blur"]
