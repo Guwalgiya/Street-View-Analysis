@@ -46,8 +46,8 @@ while itr < 4:
         #exp_residual = np.exp(-1 * np.power(residual, 2) / (2 * np.power(sigma, 2)))
         #eights  = np.divide(exp_residual, sum(exp_residual))
         #weights = np.divide(residual, sum(residual))
-        #labels[i] = np.argmax(weights)
-        labels[i]  = np.argmin(residual)
+        labels[i] = np.argmax(residual)
+        #labels[i]  = np.argmin(residual)
 
     print(labels)
  
@@ -57,6 +57,8 @@ while itr < 4:
       plt.scatter(train_data[:, 0], train_data[:, 1], c = labels, cmap= "viridis")
       plt.gca().invert_yaxis()
     itr = itr + 1
+    
+    
 # ===============================================
 # Debug
 # debug_data = np.load("dabug_data_1.npy")
