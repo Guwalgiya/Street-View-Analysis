@@ -13,7 +13,7 @@ from   random               import sample, randint
 # def EM_Reg(train_data, num_cluster):
     
 train_data = np.load("dabug_data_1.npy")
-num_cluster = 3 
+num_cluster = 3
 slope_bound = 100
 sigma       = 0.5
 # ===============================================
@@ -27,43 +27,43 @@ labels = np.array([randint(0, num_cluster - 1) for data_point in train_data])
 print(labels)
 #labels = [0] * len(train_data)
 itr = 1
+
+
 while itr < 4:
-    
-    for label in range(num_cluster):
+    if True:
+        plt.figure()
+        plt.axis([0, 540, 0, 540])
+        plt.scatter(train_data[:, 0], train_data[:, 1], c = labels, cmap= "viridis")
+        plt.gca().invert_yaxis()  
         
-        indices  = np.where(labels == label)[0].tolist()
-        reg_data = train_data[indices]
-        reg      = LinearRegression().fit(reg_data[:, 0].reshape(-1, 1), reg_data[:, 1])
-        k = reg.coef_[0]
-        b = reg.intercept_
-        slopes[label - 1] = k
-        intercepts[label - 1] = b
-    
+    try:    
+        for label in range(num_cluster):
+            indices  = np.where(labels == label)[0].tolist()
+            reg_data = train_data[indices]
+            reg      = LinearRegression().fit(reg_data[:, 0].reshape(-1, 1), reg_data[:, 1])
+            k = reg.coef_[0]
+            b = reg.intercept_
+            slopes[label]     = k
+            intercepts[label] = b
+            y_pred = reg.predict(reg_data[:, 0].reshape(-1, 1))
+            plt.plot(reg_data[:, 0], y_pred, color = 'red', linewidth = 1)
+    except:
+        pass    
+
+        
     for i in range(len(train_data)):
         x        = train_data[i][0] 
         y        = train_data[i][1] 
-        point_a  = [0, b]
-        point_b  = [1, k + b]
-        train_data = train_data[i]
+        perpen_x = np.divide((np.multiply(slopes, x) - intercepts + y), 
+                              np.multiply(slopes, 2))
+        perpen_y = np.divide((np.multiply(slopes, x) + intercepts + y), 2)
+        distance = np.sqrt(np.power(x - perpen_x, 2) + np.power(y - perpen_y, 2))
         
-        residual = np.abs(np.multiply(slopes, x) + intercepts - y)
+        #residual = np.abs(np.multiply(slopes, x) + intercepts - y)
         #exp_residual = np.exp(-1 * np.power(residual, 2) / (2 * np.power(sigma, 2)))
         #eights  = np.divide(exp_residual, sum(exp_residual))
         #weights = np.divide(residual, sum(residual))
-        labels[i] = np.argmax(residual)
-        #labels[i]  = np.argmin(residual)
+        #labels[i] = np.argmax(residual)
+        labels[i]  = np.argmin(distance)
 
-    print(labels)
- 
-    if True:
-      plt.figure()
-      plt.axis([0, 540, 0, 540])
-      plt.scatter(train_data[:, 0], train_data[:, 1], c = labels, cmap= "viridis")
-      plt.gca().invert_yaxis()
     itr = itr + 1
-    
-    
-# ===============================================
-# Debug
-# debug_data = np.load("dabug_data_1.npy")
-# EM_Reg(debug_data, 3)
