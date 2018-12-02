@@ -42,6 +42,10 @@ while itr < 4:
     for i in range(len(train_data)):
         x        = train_data[i][0] 
         y        = train_data[i][1] 
+        point_a  = [0, b]
+        point_b  = [1, k + b]
+        train_data = train_data[i]
+        
         residual = np.abs(np.multiply(slopes, x) + intercepts - y)
         #exp_residual = np.exp(-1 * np.power(residual, 2) / (2 * np.power(sigma, 2)))
         #eights  = np.divide(exp_residual, sum(exp_residual))
