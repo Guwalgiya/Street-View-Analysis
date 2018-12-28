@@ -46,15 +46,15 @@ trap_bottom_width = 1     # 0.85
 trap_top_width    = 0.3     # 0.7
 trap_height       = 0.34   # 0.4
 mask_color        = 255  
-if_show_region    = False
+if_show_region    = True
 
 
 # ===============================================
 # Hough Transform
 if_show_R_cluster = False
-if_show_L_cluster = True
+if_show_L_cluster = False
 if_show_scatters  = False
-if_show_fit_lines = False
+if_show_fit_lines = True
 min_line_length   = 5     # 10
 slope_threshold   = 0
 painting_color    = (255, 255, 0)
@@ -77,9 +77,9 @@ original_image_weight = 1
 
 # ===============================================
 # Top Level
-if_show_original_image = False
-if_show_target_region  = False
-if_show_final_image    = False
+if_show_original_image = True
+if_show_target_region  = True
+if_show_final_image    = True
 
 
 # ===============================================
@@ -240,8 +240,8 @@ def ensemble(input_image):
 
 # =============================================== 
 # Call function ENSEMBLE to perform lane detection on a short video
-input_clip  = VideoFileClip(video_folder + slash + input_video_name).set_end(0.1)
-output_clip = input_clip.fl_image(ensemble) 
+#input_clip  = VideoFileClip(video_folder + slash + input_video_name).set_end(0.1)
+#output_clip = input_clip.fl_image(ensemble) 
 #output_clip.write_videofile(output_video_name, audio = False, verbose = False)
 
 

@@ -26,9 +26,12 @@ def scope(original_image, input_image, vertices_parameters_bundle):
     a = ((width * (1     - trap_bottom_width))      // 2, height)
     #b = ((width * (1     - trap_top_width))         // 2, height - height * trap_height)
     b = ((width * (1     - trap_bottom_width))      // 2, height - height * trap_height)
-    c = (width  - (width * (1 - trap_top_width))    // 2, height - height * trap_height)
-    d = (width  - (width * (1 - trap_bottom_width)) // 2, height)
+    #c = (width  - (width * (1 - trap_top_width))    // 2, height - height * trap_height)
+    c = (650, height - height * trap_height)
+    #d = (width  - (width * (1 - trap_bottom_width)) // 2, height)
+    d = (1600, height)
     
+    print(a, b, c, d)
     
     # ===============================================
     # Combine 
