@@ -57,8 +57,8 @@ def draw(original_image, input_image, draw_parameters_bundle):
 
     # ===============================================
     # Frame Information 
-    height   = original_image.shape[0]
     width    = original_image.shape[1]
+    height   = original_image.shape[0]
     center_x = width  / 2
     
     

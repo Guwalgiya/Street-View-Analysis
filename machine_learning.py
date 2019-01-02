@@ -1,10 +1,10 @@
 # ===============================================
 # Import Packages and Functions
+from   sklearn.linear_model import LinearRegression
+from   sklearn.mixture      import GaussianMixture
+from   itertools            import combinations 
 import matplotlib.pyplot    as     plt
 import numpy                as     np
-from   sklearn.linear_model import LinearRegression
-from   sklearn.mixture      import GMM
-from   itertools            import combinations 
 
 
 # ===============================================
@@ -28,8 +28,9 @@ def clusteringPoints(train_data, if_show_cluster, Y1, Y2, height, width, side):
         
         # ===============================================
         # Do Clustering
-        cluster = GMM(n_components = num_cluster, covariance_type = "full")
-        labels  = cluster.fit_predict(train_data)
+        cluster = GaussianMixture(n_components = num_cluster, covariance_type = "full")
+        gmm     = cluster.fit(train_data)
+        labels  = gmm.predict(train_data)
         
         
         # ===============================================

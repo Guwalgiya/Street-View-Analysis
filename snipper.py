@@ -31,7 +31,6 @@ def scope(original_image, input_image, vertices_parameters_bundle):
     #d = (width  - (width * (1 - trap_bottom_width)) // 2, height)
     d = (1600, height)
     
-    print(a, b, c, d)
     
     # ===============================================
     # Combine 
@@ -39,7 +38,7 @@ def scope(original_image, input_image, vertices_parameters_bundle):
     
     
     # ===============================================
-    # if we want to show the "trap-area"
+    # if we want to show the "target-area"
     if if_show_region:
         temp_image = original_image.copy()
         temp_iamge = line(temp_image, (int(a[0]),int(a[1])), (int(b[0]),int(b[1])), [mask_color,], thickness)

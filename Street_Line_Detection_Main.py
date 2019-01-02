@@ -27,45 +27,42 @@ output_video_name   = "white.mp4"
 
 # ===============================================
 # Changeable Process Parameters
-blur_kernel_size = 1
+gamma            = 0
 sigma_X          = 0
-low_threshold    = 100
-high_threshold   = 150
 lower_white      = [155, 155, 155] #155 155 155
 upper_white      = [255, 255, 255]
 lower_yellow     = [90,  100, 100]
 upper_yellow     = [110, 255, 255]
 white_weight     = 1
 yellow_weight    = 0
-gamma            = 0
+low_threshold    = 100
+high_threshold   = 150
+blur_kernel_size = 1
+
 
 
 # ===============================================
 # Target Region Parameters
-trap_bottom_width = 1     # 0.85
+trap_bottom_width = 1       # 0.85
 trap_top_width    = 0.3     # 0.7
-trap_height       = 0.34   # 0.4
+trap_height       = 0.34    # 0.4
 mask_color        = 255  
-if_show_region    = True
+
 
 
 # ===============================================
 # Hough Transform
-if_show_R_cluster = False
-if_show_L_cluster = False
-if_show_scatters  = False
-if_show_fit_lines = True
-min_line_length   = 5     # 10
-slope_threshold   = 0
-painting_color    = (255, 255, 0)
-max_line_gap      = 5
-line_channel      = 3
-theta_degree      = 1
-draw_height       = 0.65
-threshold         = 15
-data_type         = np.uint8
-thick             = 10
-rho               = 3
+min_line_length = 5     # 10
+slope_threshold = 0
+painting_color  = (255, 255, 0)
+max_line_gap    = 5
+line_channel    = 3
+theta_degree    = 1
+draw_height     = 0.65
+threshold       = 15
+data_type       = np.uint8
+thick           = 10
+rho             = 3
 
 
 # ===============================================
@@ -77,9 +74,13 @@ original_image_weight = 1
 
 # ===============================================
 # Top Level
-if_show_original_image = True
-if_show_target_region  = True
-if_show_final_image    = True
+if_show_R_cluster = False
+if_show_L_cluster = False
+if_show_scatters  = False
+if_show_region    = False
+if_show_original_image = False
+if_show_target_region  = False
+if_show_final_image    = False
 
 
 # ===============================================
@@ -240,9 +241,9 @@ def ensemble(input_image):
 
 # =============================================== 
 # Call function ENSEMBLE to perform lane detection on a short video
-#input_clip  = VideoFileClip(video_folder + slash + input_video_name).set_end(0.1)
-#output_clip = input_clip.fl_image(ensemble) 
-#output_clip.write_videofile(output_video_name, audio = False, verbose = False)
+input_clip  = VideoFileClip(video_folder + slash + input_video_name)
+output_clip = input_clip.fl_image(ensemble) 
+output_clip.write_videofile(output_video_name, audio = False, verbose = False)
 
 
 # =============================================== 
