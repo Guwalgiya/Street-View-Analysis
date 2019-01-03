@@ -12,25 +12,22 @@ def scope(original_image, input_image, vertices_parameters_bundle):
     
     # ===============================================
     # Get Parameters
-    mask_color        = vertices_parameters_bundle["m_color"]
-    if_show_region    = vertices_parameters_bundle["if_show_region"]
-    height, width     = input_image.shape
-    trap_height       = vertices_parameters_bundle["t_height"]
-    trap_top_width    = vertices_parameters_bundle["t_twidth"]
-    trap_bottom_width = vertices_parameters_bundle["t_bwidth"]
-    thickness         = vertices_parameters_bundle["thickness"]
+    if_show_target_region = vertices_parameters_bundle["if_show_target_region"]
+    trap_bottom_width     = vertices_parameters_bundle["t_bwidth"]
+    trap_top_width        = vertices_parameters_bundle["t_twidth"]
+    height, width         = input_image.shape
+    trap_height           = vertices_parameters_bundle["t_height"]
+    mask_color            = vertices_parameters_bundle["m_color"]
+    thickness             = vertices_parameters_bundle["thickness"]
 
     
     # ===============================================
     # Vertices    
     a = ((width * (1     - trap_bottom_width))      // 2, height)
-    #b = ((width * (1     - trap_top_width))         // 2, height - height * trap_height)
-    b = ((width * (1     - trap_bottom_width))      // 2, height - height * trap_height)
-    #c = (width  - (width * (1 - trap_top_width))    // 2, height - height * trap_height)
-    c = (650, height - height * trap_height)
-    #d = (width  - (width * (1 - trap_bottom_width)) // 2, height)
-    d = (1600, height)
-    
+    b = ((width * (1     - trap_top_width))         // 2, height - height * trap_height)
+    c = (width  - (width * (1 - trap_top_width))    // 2, height - height * trap_height)
+    d = (width  - (width * (1 - trap_bottom_width)) // 2, height)
+
     
     # ===============================================
     # Combine 
@@ -39,7 +36,7 @@ def scope(original_image, input_image, vertices_parameters_bundle):
     
     # ===============================================
     # if we want to show the "target-area"
-    if if_show_region:
+    if if_show_target_region:
         temp_image = original_image.copy()
         temp_iamge = line(temp_image, (int(a[0]),int(a[1])), (int(b[0]),int(b[1])), [mask_color,], thickness)
         temp_iamge = line(temp_iamge, (int(b[0]),int(b[1])), (int(c[0]),int(c[1])), [mask_color,], thickness)
@@ -51,7 +48,7 @@ def scope(original_image, input_image, vertices_parameters_bundle):
     
     # ===============================================
     # Draw Region of Interest
-    target_region = get_target_region(input_image, vertices, mask_color)
+    target_region = getTargetRegion(input_image, vertices, mask_color)
 
     
     # ===============================================
@@ -60,7 +57,7 @@ def scope(original_image, input_image, vertices_parameters_bundle):
 
 # ===============================================
 # Function region_of_interest
-def get_target_region(input_image, vertices, mask_color):
+def getTargetRegion(input_image, vertices, mask_color):
     
     
     # ===============================================
